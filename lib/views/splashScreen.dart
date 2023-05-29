@@ -35,7 +35,7 @@ class Splash extends StatelessWidget {
                 text: 'Voteey',
                 fontSize: 40,
                 fontName: 'InterBold',
-                color: Constants.secondaryColor,
+                color: Constants.basicColor,
               ),
             ],
           ),

@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:voteey/components/delegatedForm.dart';
 import 'package:voteey/components/delegatedText.dart';
+import 'package:voteey/routes/routes.dart';
 import 'package:voteey/utils/constant.dart';
 
 class SignIn extends StatefulWidget {
@@ -17,7 +18,7 @@ class _SignInState extends State<SignIn> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Constants.secondaryColor,
+        backgroundColor: Constants.basicColor,
         body: SingleChildScrollView(
           child: Center(
             child: Padding(
@@ -69,7 +70,9 @@ class _SignInState extends State<SignIn> {
                     width: double.infinity,
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.toNamed(Routes.studHome);
+                      },
                       // onPressed: () => loginController.signIn(),
                       style: ElevatedButton.styleFrom(
                         primary: Constants.primaryColor,
@@ -77,7 +80,7 @@ class _SignInState extends State<SignIn> {
                       child: DelegatedText(
                         fontSize: 15,
                         text: 'Sign In',
-                        color: Constants.secondaryColor,
+                        color: Constants.basicColor,
                       ),
                     ),
                   ),

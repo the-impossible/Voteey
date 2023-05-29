@@ -57,7 +57,7 @@ class _delegatedFormState extends State<delegatedForm> {
             decoration: InputDecoration(
               errorText: _errorText,
               filled: true,
-              fillColor: Constants.secondaryColor,
+              fillColor: Constants.basicColor,
               hintText: widget.hintText,
               border: const OutlineInputBorder(
                 borderSide: BorderSide(

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "923871135530",
+    "project_id": "voteey-34fa7",
+    "storage_bucket": "voteey-34fa7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:923871135530:android:8c69b70f3db9574ef2c053",
+        "android_client_info": {
+          "package_name": "com.example.voteey"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "923871135530-m495kfks8lucpqad33nsssjrvnhnk7lk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDw40M5kp4Ah8pbGqhW3NhPCnPefp6x22I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "923871135530-m495kfks8lucpqad33nsssjrvnhnk7lk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

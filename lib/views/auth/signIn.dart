@@ -71,7 +71,7 @@ class _SignInState extends State<SignIn> {
                     height: 50,
                     child: ElevatedButton(
                       onPressed: () {
-                        Get.toNamed(Routes.studHome);
+                        Get.toNamed(Routes.adminHome);
                       },
                       // onPressed: () => loginController.signIn(),
                       style: ElevatedButton.styleFrom(

@@ -42,6 +42,7 @@ class _StudentListState extends State<StudentList> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 10),
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           DelegatedText(
                             text: "No selected file",
@@ -50,23 +51,46 @@ class _StudentListState extends State<StudentList> {
                             color: Constants.basicColor,
                           ),
                           const SizedBox(height: 10),
-                          SizedBox(
-                            width: double.infinity,
-                            height: 50,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                Get.toNamed(Routes.adminHome);
-                              },
-                              // onPressed: () => loginController.signIn(),
-                              style: ElevatedButton.styleFrom(
-                                primary: Constants.basicColor,
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: size.width * .4,
+                                height: 50,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    Get.toNamed(Routes.adminHome);
+                                  },
+                                  // onPressed: () => loginController.signIn(),
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Constants.basicColor,
+                                  ),
+                                  child: DelegatedText(
+                                    fontSize: 15,
+                                    text: 'Select File',
+                                    color: Constants.tertiaryColor,
+                                  ),
+                                ),
                               ),
-                              child: DelegatedText(
-                                fontSize: 15,
-                                text: 'Upload Student Account',
-                                color: Constants.tertiaryColor,
+                              const SizedBox(width: 10),
+                              SizedBox(
+                                width: size.width * .4,
+                                height: 50,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    Get.toNamed(Routes.adminHome);
+                                  },
+                                  // onPressed: () => loginController.signIn(),
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Constants.basicColor,
+                                  ),
+                                  child: DelegatedText(
+                                    fontSize: 15,
+                                    text: 'Upload File',
+                                    color: Constants.tertiaryColor,
+                                  ),
+                                ),
                               ),
-                            ),
+                            ],
                           ),
                         ],
                       ),
@@ -137,22 +161,5 @@ class _StudentListState extends State<StudentList> {
         ),
       ),
     );
-  }
-}
-
-String getOrdinal(int number) {
-  if (number % 100 >= 11 && number % 100 <= 13) {
-    return '${number}th';
-  } else {
-    switch (number % 10) {
-      case 1:
-        return '${number}st';
-      case 2:
-        return '${number}nd';
-      case 3:
-        return '${number}rd';
-      default:
-        return '${number}th';
-    }
   }
 }

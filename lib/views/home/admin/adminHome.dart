@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:voteey/components/navigationDrawer.dart';
 import 'package:voteey/utils/constant.dart';
+import 'package:voteey/views/home/admin/createCandidate.dart';
 import 'package:voteey/views/home/admin/studentList.dart';
 import 'package:voteey/views/home/student/profile.dart';
 import 'package:voteey/views/home/student/resultCategory.dart';
@@ -32,11 +33,11 @@ class _AdminHomePageState extends State<AdminHomePage> {
         backgroundColor: Constants.basicColor,
         body: IndexedStack(
           index: currentPage,
-          children: [
-            const StudentList(),
-            const ResultCategory(),
-            VoteCategory(size: size),
-            const ProfilePage(),
+          children: const [
+            StudentList(),
+            ResultCategory(),
+            CreateCandidate(),
+            ProfilePage(),
           ],
         ),
         drawer: const NavigationDrawer(),

@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:voteey/components/delegatedForm.dart';
 import 'package:voteey/components/delegatedText.dart';
+import 'package:voteey/controllers/loginController.dart';
 import 'package:voteey/routes/routes.dart';
 import 'package:voteey/utils/constant.dart';
 
@@ -12,7 +13,7 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
-  // LoginController loginController = Get.put(LoginController());
+  LoginController loginController = Get.put(LoginController());
 
   @override
   Widget build(BuildContext context) {
@@ -36,19 +37,19 @@ class _SignInState extends State<SignIn> {
                       height: 130,
                     ),
                   ),
-                  const delegatedForm(
+                  delegatedForm(
                     fieldName: 'Reg. No',
                     icon: Icons.person,
                     hintText: 'Enter your registration number',
-                    // formController: loginController.emailController,
+                    formController: loginController.regNoController,
                     isSecured: false,
                   ),
-                  const delegatedForm(
+                  delegatedForm(
                     fieldName: 'Password',
                     icon: Icons.lock,
                     hintText: 'Enter your password',
                     isSecured: true,
-                    // formController: loginController.passwordController,
+                    formController: loginController.passwordController,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 18.0),
@@ -71,9 +72,8 @@ class _SignInState extends State<SignIn> {
                     height: 50,
                     child: ElevatedButton(
                       onPressed: () {
-                        Get.toNamed(Routes.adminHome);
+                        loginController.signIn();
                       },
-                      // onPressed: () => loginController.signIn(),
                       style: ElevatedButton.styleFrom(
                         primary: Constants.primaryColor,
                       ),

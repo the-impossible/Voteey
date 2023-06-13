@@ -90,7 +90,9 @@ class _CreateCandidateState extends State<CreateCandidate> {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               TextButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Get.toNamed(Routes.allCandidate);
+                                },
                                 child: DelegatedText(
                                   text: 'All Registered Candidate',
                                   fontSize: 15,

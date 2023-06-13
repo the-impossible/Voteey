@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:voteey/views/home/admin/adminHome.dart';
+import 'package:voteey/views/home/admin/allCandidates.dart';
 import 'package:voteey/views/home/student/castVote.dart';
 import 'package:voteey/views/home/student/home.dart';
 import 'package:voteey/views/home/student/profile.dart';
@@ -16,6 +17,7 @@ class Routes {
   static String resultStats = '/resultStats';
   static String profilePage = '/profilePage';
   static String resetPassword = '/resetPassword';
+  static String allCandidate = '/allCandidate';
 
   // Admin Pages
   static String adminHome = '/adminHome';
@@ -51,5 +53,9 @@ final getPages = [
   GetPage(
     name: Routes.adminHome,
     page: () => AdminHomePage(),
+  ),
+  GetPage(
+    name: Routes.allCandidate,
+    page: () => const AllCandidate(),
   ),
 ];

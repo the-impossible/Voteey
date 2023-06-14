@@ -1,7 +1,16 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:csv/csv.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:voteey/components/delegatedAppBar.dart';
+import 'package:voteey/components/delegatedSnackBar.dart';
 import 'package:voteey/components/delegatedText.dart';
+import 'package:voteey/controllers/createAccountController.dart';
 import 'package:voteey/routes/routes.dart';
 import 'package:voteey/utils/constant.dart';
 
@@ -13,6 +22,57 @@ class StudentList extends StatefulWidget {
 }
 
 class _StudentListState extends State<StudentList> {
+  CreateAccountController createAccountController =
+      Get.put(CreateAccountController());
+
+  String? filePath;
+  String selected = "No selected file";
+  String preSelected = "";
+
+  Future _pickCSV() async {
+    final result = await FilePicker.platform.pickFiles(allowMultiple: false);
+
+    // if no file is found
+    if (result == null) return;
+
+    showDialog(
+      context: Get.context!,
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
+
+    filePath = result.files.first.path!;
+
+    final input = File(filePath!).openRead();
+    final fields = await input
+        .transform(utf8.decoder)
+        .transform(const CsvToListConverter())
+        .toList();
+
+    createAccountController.fields = fields;
+
+    for (var element in fields) {
+      final regNo = element[0].toString().toLowerCase();
+
+      QuerySnapshot snaps = await FirebaseFirestore.instance
+          .collection('Users')
+          .where("regNo", isEqualTo: regNo)
+          .get();
+      if (snaps.docs.length != 1) {
+        preSelected = "File Selected";
+      } else {
+        preSelected = "No selected file";
+        ScaffoldMessenger.of(Get.context!).showSnackBar(
+            delegatedSnackBar("Invalid CSV! contains existing account", false));
+        break;
+      }
+    }
+    setState(() {
+      selected = preSelected;
+    });
+    navigator!.pop(Get.context!);
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -45,7 +105,7 @@ class _StudentListState extends State<StudentList> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           DelegatedText(
-                            text: "No selected file",
+                            text: selected,
                             fontSize: 15,
                             fontName: "InterBold",
                             color: Constants.basicColor,
@@ -58,9 +118,8 @@ class _StudentListState extends State<StudentList> {
                                 height: 50,
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    Get.toNamed(Routes.adminHome);
+                                    _pickCSV();
                                   },
-                                  // onPressed: () => loginController.signIn(),
                                   style: ElevatedButton.styleFrom(
                                     primary: Constants.basicColor,
                                   ),
@@ -77,9 +136,8 @@ class _StudentListState extends State<StudentList> {
                                 height: 50,
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    Get.toNamed(Routes.adminHome);
+                                    createAccountController.createAccount();
                                   },
-                                  // onPressed: () => loginController.signIn(),
                                   style: ElevatedButton.styleFrom(
                                     primary: Constants.basicColor,
                                   ),

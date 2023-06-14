@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:voteey/components/delegatedSnackBar.dart';
 import 'package:voteey/services/database.dart';
+import 'package:voteey/utils/loading.dart';
 
 class LoginController extends GetxController {
   TextEditingController regNoController = TextEditingController();

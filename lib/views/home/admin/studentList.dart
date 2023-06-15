@@ -11,8 +11,11 @@ import 'package:voteey/components/delegatedAppBar.dart';
 import 'package:voteey/components/delegatedSnackBar.dart';
 import 'package:voteey/components/delegatedText.dart';
 import 'package:voteey/controllers/createAccountController.dart';
+import 'package:voteey/models/user_data.dart';
 import 'package:voteey/routes/routes.dart';
+import 'package:voteey/services/database.dart';
 import 'package:voteey/utils/constant.dart';
+import 'package:voteey/utils/title_case.dart';
 
 class StudentList extends StatefulWidget {
   const StudentList({super.key});
@@ -24,6 +27,8 @@ class StudentList extends StatefulWidget {
 class _StudentListState extends State<StudentList> {
   CreateAccountController createAccountController =
       Get.put(CreateAccountController());
+
+  DatabaseService databaseService = Get.put(DatabaseService());
 
   String? filePath;
   String selected = "No selected file";
@@ -159,53 +164,116 @@ class _StudentListState extends State<StudentList> {
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: 5,
-                            itemBuilder: (context, index) {
-                              return Container(
-                                margin: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 10),
-                                height: size.height * .13,
-                                decoration: BoxDecoration(
-                                  color: Constants.basicColor,
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Color.fromARGB(221, 207, 203, 203),
-                                      blurRadius: 1,
-                                      offset: Offset(1, 3),
-                                    ),
-                                  ],
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          DelegatedText(
-                                            text: "Emmanuel Richard",
-                                            fontSize: 18,
-                                            fontName: "InterBold",
-                                            color: Constants.tertiaryColor,
+                          StreamBuilder<List<UserData>>(
+                            stream: databaseService.getAccounts('std'),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasError) {
+                                return Text(
+                                    "Something went wrong! ${snapshot.error}");
+                              } else if (snapshot.hasData) {
+                                final accountList = snapshot.data!;
+                                if (accountList.isNotEmpty) {
+                                  return ListView.builder(
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemCount: accountList.length,
+                                    itemBuilder: (context, index) {
+                                      final accountData = accountList[index];
+                                      return Container(
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 10),
+                                        height: size.height * .13,
+                                        decoration: BoxDecoration(
+                                          color: Constants.basicColor,
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: Color.fromARGB(
+                                                  221, 207, 203, 203),
+                                              blurRadius: 1,
+                                              offset: Offset(1, 3),
+                                            ),
+                                          ],
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceAround,
+                                                children: [
+                                                  DelegatedText(
+                                                    text: accountData.name
+                                                        .titleCase(),
+                                                    fontSize: 18,
+                                                    fontName: "InterBold",
+                                                    color:
+                                                        Constants.tertiaryColor,
+                                                  ),
+                                                  const Spacer(),
+                                                  FutureBuilder<String?>(
+                                                    future: databaseService
+                                                        .getImage(
+                                                            accountData.id,
+                                                            'Users'),
+                                                    builder:
+                                                        (context, snapshot) {
+                                                      if (snapshot
+                                                              .connectionState ==
+                                                          ConnectionState
+                                                              .waiting) {
+                                                        return const Center(
+                                                          child:
+                                                              CircularProgressIndicator(),
+                                                        );
+                                                      } else if (snapshot
+                                                          .hasData) {
+                                                        return ClipOval(
+                                                          child: Image.network(
+                                                            snapshot.data!,
+                                                            height: 50,
+                                                            width: 50,
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                        );
+                                                      } else {
+                                                        return Image.asset(
+                                                          "assets/user.png",
+                                                          width: 50,
+                                                          height: 40,
+                                                        );
+                                                      }
+                                                    },
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
                                           ),
-                                          const Spacer(),
-                                          Image.asset(
-                                            "assets/comlogo.png",
-                                            width: 50,
-                                            height: 40,
-                                          ),
-                                        ],
+                                        ),
+                                      );
+                                    },
+                                  );
+                                } else {
+                                  return Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 20.0),
+                                      child: DelegatedText(
+                                        text: "No Student Record",
+                                        fontSize: 20,
                                       ),
-                                    ],
-                                  ),
-                                ),
-                              );
+                                    ),
+                                  );
+                                }
+                              } else {
+                                return const Center(
+                                    child: CircularProgressIndicator());
+                              }
                             },
                           ),
                         ],

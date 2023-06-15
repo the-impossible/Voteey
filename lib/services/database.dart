@@ -20,12 +20,13 @@ class DatabaseService extends GetxController {
 
   //Create user
   Future createStudentData(String name, String regNo, String type) async {
-    await setImage(uid);
+    await setImage(uid, 'Users');
     return await usersCollection.doc(uid).set(
       {
         'name': name,
         'regNo': regNo,
         'type': type,
+        'created': FieldValue.serverTimestamp(),
       },
     );
   }
@@ -36,8 +37,8 @@ class DatabaseService extends GetxController {
     final snapshot = await usersCollection.doc(uid).get();
     // Return user type as string
     if (snapshot.exists) {
-      userData = UserData.fromJson(snapshot.data()!);
-      return UserData.fromJson(snapshot.data()!);
+      userData = UserData.fromJson(snapshot);
+      return UserData.fromJson(snapshot);
     }
     return null;
   }
@@ -47,18 +48,38 @@ class DatabaseService extends GetxController {
     return true;
   }
 
-  Future<bool> setImage(String? uid) async {
+  Future<bool> setImage(String? uid, String path) async {
     final ByteData byteData = await rootBundle.load("assets/user.png");
     final Uint8List imageData = byteData.buffer.asUint8List();
-    filesCollection.child(uid!).putData(imageData);
+    filesCollection.child("$path/$uid").putData(imageData);
     return true;
   }
 
-  Stream<String?> getImage(String uid) {
+  Future<String?> getImage(String uid, String path) async {
     try {
-      return filesCollection.child(uid).getDownloadURL().asStream();
+      final url = await filesCollection.child("$path/$uid").getDownloadURL();
+      return url;
+    } catch (e) {
+      return null;
+    }
+  }
+
+    Stream<String?> getCurrentUserImage(String uid, String path) {
+    try {
+      return filesCollection.child("$path/$uid").getDownloadURL().asStream();
     } catch (e) {
       return Stream.value(null);
     }
+  }
+
+  Stream<List<UserData>> getAccounts(String type) {
+    return usersCollection
+        .where('type', isEqualTo: type)
+        .orderBy('created', descending: true)
+        .snapshots()
+        .map(
+          (snapshot) =>
+              snapshot.docs.map((doc) => UserData.fromJson(doc)).toList(),
+        );
   }
 }

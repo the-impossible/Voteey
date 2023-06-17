@@ -63,7 +63,7 @@ class DatabaseService extends GetxController {
 
   Future<bool> updateProfileTime(String uid) async {
     usersCollection.doc(uid).update({
-        'last_updated': FieldValue.serverTimestamp(),
+      'last_updated': FieldValue.serverTimestamp(),
     });
     return true;
   }

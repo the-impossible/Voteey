@@ -142,10 +142,20 @@ class _AllCandidateState extends State<AllCandidate> {
                                                                 )),
                                                           );
                                                         }),
-                                                    child: Image.network(
-                                                      candidateData.image,
-                                                      width: 50,
-                                                      height: 40,
+                                                    child: CircleAvatar(
+                                                      backgroundColor:
+                                                          Color.fromARGB(255,
+                                                              228, 236, 230),
+                                                      minRadius: 25,
+                                                      maxRadius: 25,
+                                                      child: ClipOval(
+                                                        child: Image.network(
+                                                          candidateData.image,
+                                                          height: 40,
+                                                          width: 40,
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
                                                 ],

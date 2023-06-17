@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 import 'package:flutter/services.dart';
+import 'package:voteey/models/position_data.dart';
 import 'package:voteey/models/user_data.dart';
 
 class DatabaseService extends GetxController {
@@ -16,6 +17,9 @@ class DatabaseService extends GetxController {
 
   // collection reference
   var usersCollection = FirebaseFirestore.instance.collection("Users");
+  var positionCollection = FirebaseFirestore.instance.collection("Positions");
+  var candidatesCollection =
+      FirebaseFirestore.instance.collection("Candidates");
   var filesCollection = FirebaseStorage.instance.ref();
 
   //Create user
@@ -64,7 +68,7 @@ class DatabaseService extends GetxController {
     }
   }
 
-    Stream<String?> getCurrentUserImage(String uid, String path) {
+  Stream<String?> getCurrentUserImage(String uid, String path) {
     try {
       return filesCollection.child("$path/$uid").getDownloadURL().asStream();
     } catch (e) {
@@ -81,5 +85,61 @@ class DatabaseService extends GetxController {
           (snapshot) =>
               snapshot.docs.map((doc) => UserData.fromJson(doc)).toList(),
         );
+  }
+
+  Future<List<Position>> getPositions() async {
+    List<Position> positions = [];
+
+    QuerySnapshot<Map<String, dynamic>> snapshot =
+        await positionCollection.get();
+
+    for (QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot
+        in snapshot.docs) {
+      Position position = Position.fromJson(documentSnapshot);
+      positions.add(position);
+    }
+
+    return positions;
+  }
+
+  //Check if the student account exists
+  Future<bool> verifyStudent(String regNo) async {
+    QuerySnapshot<Map<String, dynamic>> snaps =
+        await usersCollection.where('regNo', isEqualTo: regNo).get();
+    if (snaps.docs.isNotEmpty) {
+      return true;
+    }
+    return false;
+  }
+
+  //Check if the student account exists
+  Future<bool> hasApplied(String regNo) async {
+    final snapshot =
+        await usersCollection.where('regNo', isEqualTo: regNo).get();
+
+    if (snapshot.docs.isNotEmpty) {
+      String studentId = snapshot.docs[0].id;
+      final snaps = await candidatesCollection
+          .where('can_id', isEqualTo: usersCollection.doc(studentId))
+          .get();
+      if (snaps.docs.isNotEmpty) return true;
+    }
+    return false;
+  }
+
+  Future<bool> applyCandidate(String regNo, String posID) async {
+    final snapshot =
+        await usersCollection.where('regNo', isEqualTo: regNo).get();
+
+    if (snapshot.docs.isNotEmpty) {
+      String studentId = snapshot.docs[0].id;
+      candidatesCollection.doc().set({
+        'can_id': usersCollection.doc(studentId),
+        'pos_id': positionCollection.doc(posID),
+      });
+
+      return true;
+    }
+    return false;
   }
 }

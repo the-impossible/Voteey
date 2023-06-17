@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:voteey/components/delegatedText.dart';
+import 'package:voteey/controllers/positionController.dart';
 import 'package:voteey/models/user_data.dart';
 import 'package:voteey/services/database.dart';
 import 'package:voteey/utils/loading.dart';
@@ -18,6 +19,7 @@ class Wrapper extends StatefulWidget {
 
 class _WrapperState extends State<Wrapper> {
   DatabaseService databaseService = Get.put(DatabaseService());
+  PositionController positionController = Get.put(PositionController());
 
   @override
   Widget build(BuildContext context) {

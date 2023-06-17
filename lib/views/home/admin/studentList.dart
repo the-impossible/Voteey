@@ -35,7 +35,9 @@ class _StudentListState extends State<StudentList> {
   String preSelected = "";
 
   Future _pickCSV() async {
-    final result = await FilePicker.platform.pickFiles(allowMultiple: false);
+    final result = await FilePicker.platform.pickFiles(
+      allowMultiple: false,
+    );
 
     // if no file is found
     if (result == null) return;

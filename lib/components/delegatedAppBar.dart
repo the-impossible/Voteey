@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:voteey/components/delegatedText.dart';
+import 'package:voteey/models/user_data.dart';
 import 'package:voteey/services/database.dart';
 import 'package:voteey/utils/constant.dart';
 
@@ -32,30 +33,41 @@ class DelegatedAppBar extends StatelessWidget {
             color: Constants.primaryColor,
           ),
           const Spacer(),
-          StreamBuilder<String?>(
-            stream: databaseService.getCurrentUserImage(
-                FirebaseAuth.instance.currentUser!.uid, 'Users'),
+          StreamBuilder<UserData?>(
+            stream: databaseService
+                .getUserProfile(FirebaseAuth.instance.currentUser!.uid),
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else if (snapshot.hasData) {
-                return ClipOval(
-                  child: Image.network(
-                    snapshot.data!,
-                    height: 50,
-                    width: 50,
-                    fit: BoxFit.cover,
-                  ),
-                );
-              } else {
-                return Image.asset(
-                  "assets/user.png",
-                  width: 50,
-                  height: 40,
-                );
-              }
+              return StreamBuilder<String?>(
+                stream: databaseService.getCurrentUserImage(
+                    FirebaseAuth.instance.currentUser!.uid, 'Users'),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.hasData) {
+                    return CircleAvatar(
+                      backgroundColor: Color.fromARGB(255, 228, 236, 230),
+                      minRadius: 25,
+                      maxRadius: 25,
+                      child: ClipOval(
+                        child: Image.network(
+                          snapshot.data!,
+                          height: 40,
+                          width: 40,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    );
+                  } else {
+                    return Image.asset(
+                      "assets/user.png",
+                      width: 50,
+                      height: 40,
+                    );
+                  }
+                },
+              );
             },
           ),
         ],

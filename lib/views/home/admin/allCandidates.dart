@@ -101,7 +101,7 @@ class _AllCandidateState extends State<AllCandidate> {
                                                     fontSize: 18,
                                                     fontName: "InterBold",
                                                     color:
-                                                        Constants.tertiaryColor,
+                                                        Constants.primaryColor,
                                                   ),
                                                 ],
                                               ),

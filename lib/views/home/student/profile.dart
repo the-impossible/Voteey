@@ -5,11 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:voteey/components/delegatedForm.dart';
+import 'package:voteey/components/delegatedAppBar.dart';
 import 'package:voteey/components/delegatedSnackBar.dart';
 import 'package:voteey/components/delegatedText.dart';
+import 'package:voteey/controllers/profileController.dart';
 import 'package:voteey/routes/routes.dart';
+import 'package:voteey/services/database.dart';
 import 'package:voteey/utils/constant.dart';
+import 'package:voteey/utils/title_case.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -19,6 +22,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  ProfileController profileController = Get.put(ProfileController());
+  DatabaseService databaseService = Get.put(DatabaseService());
   File? image;
 
   Future pickImage() async {
@@ -30,7 +35,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
       setState(() {
         image = File(pickedFile.path);
-        // editProfileController.image = image;
+        profileController.image = image;
       });
     } on PlatformException catch (e) {
       ScaffoldMessenger.of(Get.context!).showSnackBar(
@@ -45,9 +50,10 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Scaffold(
         body: Column(
           children: [
+            const DelegatedAppBar(),
             Padding(
               padding: EdgeInsets.only(
-                  left: 15, right: 15, top: size.height * .1, bottom: 10),
+                  left: 15, right: 15, top: size.height * .05, bottom: 10),
               child: Container(
                 height: size.height * .43,
                 width: size.width,
@@ -71,20 +77,45 @@ class _ProfilePageState extends State<ProfilePage> {
                     children: [
                       Stack(
                         children: [
-                          Center(
-                            child: CircleAvatar(
-                              backgroundColor:
-                                  Color.fromARGB(255, 228, 236, 230),
-                              maxRadius: 50,
-                              minRadius: 50,
-                              child: ClipOval(
-                                child: Image.asset(
-                                  "assets/comlogo.png",
-                                  width: 60,
-                                  height: 60,
-                                ),
-                              ),
-                            ),
+                          StreamBuilder<String?>(
+                            stream: databaseService.getCurrentUserImage(
+                                FirebaseAuth.instance.currentUser!.uid,
+                                'Users'),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasError) {
+                                return Text(
+                                    "Something went wrong! ${snapshot.error}");
+                              } else if (snapshot.hasData) {
+                                return Center(
+                                  child: CircleAvatar(
+                                    backgroundColor:
+                                        Color.fromARGB(255, 228, 236, 230),
+                                    maxRadius: 50,
+                                    minRadius: 50,
+                                    child: ClipOval(
+                                      child: (image != null)
+                                          ? Image.file(
+                                              image!,
+                                              width: 80,
+                                              height: 80,
+                                              fit: BoxFit.cover,
+                                            )
+                                          : Image.network(
+                                              snapshot.data!,
+                                              width: 80,
+                                              height: 80,
+                                              fit: BoxFit.cover,
+                                              // colorBlendMode: BlendMode.darken,
+                                            ),
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                            },
                           ),
                           Padding(
                             padding: const EdgeInsets.only(
@@ -111,7 +142,17 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       const SizedBox(height: 20),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          if (image != null) {
+                            profileController.updateAccount();
+                            image = null;
+                          } else {
+                            ScaffoldMessenger.of(Get.context!).showSnackBar(
+                              delegatedSnackBar(
+                                  "FAILED: No image selected", false),
+                            );
+                          }
+                        },
                         child: DelegatedText(
                           text: "Update picture",
                           fontSize: 16,
@@ -120,14 +161,14 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ),
                       DelegatedText(
-                        text: "Emmanuel Richard",
+                        text: databaseService.userData!.name.titleCase(),
                         fontSize: 23,
                         fontName: "InterBold",
                         color: Constants.tertiaryColor,
                       ),
                       const SizedBox(height: 8),
                       DelegatedText(
-                        text: "CST20HND0558",
+                        text: databaseService.userData!.regNo.toUpperCase(),
                         fontSize: 18,
                         fontName: "InterBold",
                         color: Constants.tertiaryColor,
@@ -136,14 +177,17 @@ class _ProfilePageState extends State<ProfilePage> {
                       Row(
                         children: [
                           DelegatedText(
-                            text: "Year Joined 2023",
+                            text:
+                                "Year Joined ${databaseService.userData!.created!.year.toString()}",
                             fontSize: 15,
                             fontName: "InterBold",
                             color: Constants.tertiaryColor,
                           ),
                           const Spacer(),
                           DelegatedText(
-                            text: "⚫ Active",
+                            text: (databaseService.userData!.type == 'adm')
+                                ? "⚫ Admin"
+                                : "⚫ Student",
                             fontSize: 15,
                             fontName: "InterBold",
                             color: Constants.primaryColor,

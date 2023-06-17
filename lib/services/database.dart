@@ -3,7 +3,9 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter/services.dart';
 import 'package:voteey/models/all_candidate_data.dart';
@@ -33,6 +35,7 @@ class DatabaseService extends GetxController {
         'regNo': regNo,
         'type': type,
         'created': FieldValue.serverTimestamp(),
+        'last_updated': FieldValue.serverTimestamp(),
       },
     );
   }
@@ -49,8 +52,24 @@ class DatabaseService extends GetxController {
     return null;
   }
 
-  Future<bool> updateImage(File? image, String uid) async {
-    filesCollection.child(uid).putFile(image!);
+  Stream<UserData?> getUserProfile(String uid) {
+    return usersCollection.doc(uid).snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        return UserData.fromJson(snapshot);
+      }
+      return null;
+    });
+  }
+
+  Future<bool> updateProfileTime(String uid) async {
+    usersCollection.doc(uid).update({
+        'last_updated': FieldValue.serverTimestamp(),
+    });
+    return true;
+  }
+
+  Future<bool> updateImage(File? image, String uid, String path) async {
+    filesCollection.child("$path/$uid").putFile(image!);
     return true;
   }
 

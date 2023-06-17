@@ -6,6 +6,7 @@ class UserData {
   final String regNo;
   final String type;
   final DateTime? created;
+  final DateTime? lastUpdated;
 
   UserData({
     required this.id,
@@ -13,6 +14,7 @@ class UserData {
     required this.regNo,
     required this.type,
     required this.created,
+    required this.lastUpdated,
   });
 
   factory UserData.fromJson(DocumentSnapshot snapshot) {
@@ -23,6 +25,9 @@ class UserData {
       type: snapshot['type'],
       created: snapshot['created'] != null
           ? (snapshot['created'] as Timestamp).toDate()
+          : null,
+      lastUpdated: snapshot['last_updated'] != null
+          ? (snapshot['last_updated'] as Timestamp).toDate()
           : null,
     );
   }

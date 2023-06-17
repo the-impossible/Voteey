@@ -6,6 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 import 'package:flutter/services.dart';
+import 'package:voteey/models/all_candidate_data.dart';
+import 'package:voteey/models/candidate_details.dart';
 import 'package:voteey/models/position_data.dart';
 import 'package:voteey/models/user_data.dart';
 
@@ -141,5 +143,54 @@ class DatabaseService extends GetxController {
       return true;
     }
     return false;
+  }
+
+  // Stream<List<AllCandidates>> getCandidates() {
+  //   return candidatesCollection
+  //       .orderBy('pos_id', descending: true)
+  //       .snapshots()
+  //       .map(
+  //         (snapshot) =>
+  //             snapshot.docs.map((doc) => AllCandidates.fromJson(doc)).toList(),
+  //       );
+  // }
+
+  Future<CandidateDetail?> getCandidate(
+      DocumentReference canID, DocumentReference posID) async {
+    // Query database to get user
+    final userSnapshot = await canID.get();
+    // Query database to get position
+    final positionSnapshot = await posID.get();
+
+    if (userSnapshot.exists && positionSnapshot.exists) {
+      // Query database to get image
+      String? imageSnapshot = await getImage(userSnapshot.id, 'Users');
+
+      final candidateDetail = CandidateDetail(
+        id: userSnapshot.id,
+        name: userSnapshot['name'],
+        regNo: userSnapshot['regNo'],
+        image: imageSnapshot!,
+        position: positionSnapshot['title'],
+      );
+      return candidateDetail;
+    }
+    return null;
+  }
+
+  Stream<List<CandidateDetail>> getCandidates() {
+    return candidatesCollection
+        .orderBy('pos_id', descending: true)
+        .snapshots()
+        .asyncMap<List<CandidateDetail?>>((snapshot) async {
+      final candidateDetails = <CandidateDetail?>[];
+
+      for (final doc in snapshot.docs) {
+        final candidate = await getCandidate(doc['can_id'], doc['pos_id']);
+        candidateDetails.add(candidate);
+      }
+
+      return candidateDetails;
+    }).map((list) => list.whereType<CandidateDetail>().toList());
   }
 }

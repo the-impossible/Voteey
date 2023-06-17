@@ -21,6 +21,7 @@ class DelegatedText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
+      softWrap: true,
       style: TextStyle(
         color: color,
         fontSize: fontSize,

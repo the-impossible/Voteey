@@ -9,9 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter/services.dart';
 import 'package:voteey/models/all_candidate_data.dart';
+import 'package:voteey/models/all_categories.dart';
 import 'package:voteey/models/candidate_details.dart';
 import 'package:voteey/models/position_data.dart';
 import 'package:voteey/models/user_data.dart';
+import 'package:voteey/models/votingCategory.dart';
 
 class DatabaseService extends GetxController {
   String? uid;
@@ -22,6 +24,7 @@ class DatabaseService extends GetxController {
   // collection reference
   var usersCollection = FirebaseFirestore.instance.collection("Users");
   var positionCollection = FirebaseFirestore.instance.collection("Positions");
+  var votesCollection = FirebaseFirestore.instance.collection("Votes");
   var candidatesCollection =
       FirebaseFirestore.instance.collection("Candidates");
   var filesCollection = FirebaseStorage.instance.ref();
@@ -123,6 +126,21 @@ class DatabaseService extends GetxController {
     return positions;
   }
 
+  Future<List<AllCandidates>> getCand() async {
+    List<AllCandidates> candidates = [];
+
+    QuerySnapshot<Map<String, dynamic>> snapshot =
+        await candidatesCollection.get();
+
+    for (QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot
+        in snapshot.docs) {
+      AllCandidates candidate = AllCandidates.fromJson(documentSnapshot);
+      candidates.add(candidate);
+    }
+
+    return candidates;
+  }
+
   //Check if the student account exists
   Future<bool> verifyStudent(String regNo) async {
     QuerySnapshot<Map<String, dynamic>> snaps =
@@ -164,16 +182,6 @@ class DatabaseService extends GetxController {
     return false;
   }
 
-  // Stream<List<AllCandidates>> getCandidates() {
-  //   return candidatesCollection
-  //       .orderBy('pos_id', descending: true)
-  //       .snapshots()
-  //       .map(
-  //         (snapshot) =>
-  //             snapshot.docs.map((doc) => AllCandidates.fromJson(doc)).toList(),
-  //       );
-  // }
-
   Future<CandidateDetail?> getCandidate(
       DocumentReference canID, DocumentReference posID) async {
     // Query database to get user
@@ -211,5 +219,33 @@ class DatabaseService extends GetxController {
 
       return candidateDetails;
     }).map((list) => list.whereType<CandidateDetail>().toList());
+  }
+
+  Stream<List<VotingCategory>> groupCategories() {
+    return positionCollection.snapshots().asyncMap(
+      (snapshot) async {
+        List<VotingCategory> categories = [];
+
+        for (var positionDoc in snapshot.docs) {
+          String positionId = positionDoc.id;
+
+          QuerySnapshot candidatesSnapshot = await candidatesCollection
+              .where('pos_id', isEqualTo: positionCollection.doc(positionId))
+              .get();
+
+          if (candidatesSnapshot.docs.isNotEmpty) {
+            List<DocumentSnapshot> candidateDocs = candidatesSnapshot.docs;
+
+            VotingCategory category = VotingCategory(
+              id: positionId,
+              posTitle: positionDoc['title'],
+              candidateNo: candidateDocs.length,
+            );
+            categories.add(category);
+          }
+        }
+        return categories;
+      },
+    );
   }
 }

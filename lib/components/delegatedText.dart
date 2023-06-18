@@ -7,6 +7,7 @@ class DelegatedText extends StatelessWidget {
   String? fontName = 'InterBold';
   Color? color = Constants.tertiaryColor;
   TextAlign? align;
+  bool? truncate;
 
   DelegatedText({
     required this.text,
@@ -14,13 +15,14 @@ class DelegatedText extends StatelessWidget {
     this.fontName,
     this.color,
     this.align,
+    this.truncate,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return Text(
-      text,
+      (truncate == true)? truncateString(text, 16):text,
       softWrap: true,
       style: TextStyle(
         color: color,
@@ -32,4 +34,13 @@ class DelegatedText extends StatelessWidget {
       overflow: TextOverflow.ellipsis,
     );
   }
+
+  String truncateString(String input, int maxLength) {
+  if (input.length <= maxLength) {
+    return input;
+  } else {
+    return input.substring(0, maxLength) + "...";
+  }
+}
+
 }

@@ -24,7 +24,6 @@ class _VoteCategoryState extends State<VoteCategory> {
 
   @override
   Widget build(BuildContext context) {
-    // databaseService.getVoteCategory();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -94,8 +93,15 @@ class _VoteCategoryState extends State<VoteCategory> {
                                           ),
                                           const Spacer(),
                                           OutlinedButton(
-                                            onPressed: () =>
-                                                Get.toNamed(Routes.castVote),
+                                            onPressed: () {
+                                              var data = {
+                                                'posID':
+                                                    votingData.id.toString()
+                                              };
+
+                                              Get.toNamed(Routes.castVote,
+                                                  parameters: data);
+                                            },
                                             style: OutlinedButton.styleFrom(
                                               side: const BorderSide(
                                                 color: Constants.basicColor,

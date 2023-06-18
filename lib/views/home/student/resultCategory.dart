@@ -37,6 +37,7 @@ class _ResultCategoryState extends State<ResultCategory> {
                 children: [
                   StreamBuilder<List<VotingCategory>>(
                     // stream: databaseService.getVotingCategory(),
+                    stream: null,
                     builder: (context, snapshot) {
                       if (snapshot.hasError) {
                         return Text("Something went wrong! ${snapshot.error}");

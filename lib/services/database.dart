@@ -175,6 +175,7 @@ class DatabaseService extends GetxController {
       candidatesCollection.doc().set({
         'can_id': usersCollection.doc(studentId),
         'pos_id': positionCollection.doc(posID),
+        'votes': 0,
       });
 
       return true;
@@ -182,6 +183,7 @@ class DatabaseService extends GetxController {
     return false;
   }
 
+  //get the details of a particular candidate
   Future<CandidateDetail?> getCandidate(
       DocumentReference canID, DocumentReference posID) async {
     // Query database to get user
@@ -206,14 +208,18 @@ class DatabaseService extends GetxController {
   }
 
   Stream<List<CandidateDetail>> getCandidates() {
+    //get all candidate by position
     return candidatesCollection
         .orderBy('pos_id', descending: true)
         .snapshots()
         .asyncMap<List<CandidateDetail?>>((snapshot) async {
+      // create an empty candidate details list
       final candidateDetails = <CandidateDetail?>[];
-
+      //loop through the gotten candidates snapshot
       for (final doc in snapshot.docs) {
+        //call a helper function to get a particular candidate
         final candidate = await getCandidate(doc['can_id'], doc['pos_id']);
+        //add the result to the candidateDetails
         candidateDetails.add(candidate);
       }
 
@@ -222,20 +228,24 @@ class DatabaseService extends GetxController {
   }
 
   Stream<List<VotingCategory>> groupCategories() {
+    // get all positions
     return positionCollection.snapshots().asyncMap(
       (snapshot) async {
+        // create an empty categories list
         List<VotingCategory> categories = [];
-
+        // loop through the positions
         for (var positionDoc in snapshot.docs) {
+          //assign the position id to a variable
           String positionId = positionDoc.id;
-
+          //query all the candidates for that position
           QuerySnapshot candidatesSnapshot = await candidatesCollection
               .where('pos_id', isEqualTo: positionCollection.doc(positionId))
               .get();
-
+          //verify that the candidateSnapshot is not empty
           if (candidatesSnapshot.docs.isNotEmpty) {
+            //assign the candidateDos to a variable
             List<DocumentSnapshot> candidateDocs = candidatesSnapshot.docs;
-
+            //add the category to the created list above
             VotingCategory category = VotingCategory(
               id: positionId,
               posTitle: positionDoc['title'],
@@ -247,5 +257,87 @@ class DatabaseService extends GetxController {
         return categories;
       },
     );
+  }
+
+  Future<VotingCategory?> positionCategories(String posID) async {
+    // get all the positions
+    DocumentSnapshot<Map<String, dynamic>> positionSnapshot =
+        await positionCollection.doc(posID).get();
+    // check if the position exists
+    if (positionSnapshot.exists) {
+      // get all the candidates with the existing position
+      QuerySnapshot<Map<String, dynamic>> candidateSnapshot =
+          await candidatesCollection
+              .where('pos_id', isEqualTo: positionCollection.doc(posID))
+              .get();
+      //if the gotten snapshot is not empty
+      if (candidateSnapshot.docs.isNotEmpty) {
+        // assign the docs to a variable
+        List<DocumentSnapshot> candidateDocs = candidateSnapshot.docs;
+        // return voting category model
+        return VotingCategory(
+          id: posID,
+          posTitle: positionSnapshot['title'],
+          candidateNo: candidateDocs.length,
+        );
+      }
+    }
+    return null;
+  }
+
+  Future<List<CandidateDetail?>?> allCandidateByPos(String posID) async {
+    // Get the position
+    DocumentSnapshot<Map<String, dynamic>> positionSnapshot =
+        await positionCollection.doc(posID).get();
+    // Check if the position exists
+    if (positionSnapshot.exists) {
+      // get all candidate with applying for the position
+      QuerySnapshot<Map<String, dynamic>> candidateSnapshot =
+          await candidatesCollection
+              .where('pos_id', isEqualTo: positionCollection.doc(posID))
+              .get();
+      // create a list of the return type
+      final candidateDetails = <CandidateDetail?>[];
+      // loop through the docs containing all the candidate
+      for (final doc in candidateSnapshot.docs) {
+        // call the helper method so that it provide the details of a candidate
+        final candidate = await getCandidate(doc['can_id'], doc['pos_id']);
+        candidateDetails.add(candidate); //add to the candidate list
+      }
+      return candidateDetails; //return the candidate details
+    }
+    return null;
+  }
+
+  Future<bool> castVote(String uID, String posID, String canID) async {
+    //get voting collection equal to pos_id and user_id
+    final snapshot = await votesCollection
+        .where('pos_id', isEqualTo: positionCollection.doc(posID))
+        .where('user_id', isEqualTo: usersCollection.doc(uID))
+        .get();
+
+    // verify user has not voted for that position (snapshot)? hasVoted : vote
+    if (snapshot.docs.isEmpty) {
+      // cast user vote
+      votesCollection.doc().set({
+        'can_id': candidatesCollection.doc(canID),
+        'pos_id': positionCollection.doc(posID),
+        'user_id': usersCollection.doc(uID),
+      });
+
+      // update candidate vote
+      final candidateSnapshot = await candidatesCollection
+          .where('can_id', isEqualTo: usersCollection.doc(canID))
+          .get();
+
+      if (candidateSnapshot.docs.isNotEmpty) {
+        final candidateDoc = candidateSnapshot.docs[0];
+        int currentVotes = candidateDoc['votes'] ?? 0;
+        await candidateDoc.reference.update({'votes': currentVotes + 1});
+        return true;
+      }
+      return false;
+    }
+    return false;
   }
 }

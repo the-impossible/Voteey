@@ -98,8 +98,13 @@ class _ResultCategoryState extends State<ResultCategory> {
                                           ),
                                           const Spacer(),
                                           OutlinedButton(
-                                            onPressed: () =>
-                                                Get.toNamed(Routes.resultStats),
+                                            onPressed: () {
+                                              var data = {
+                                                'posID': categoryData.regNo
+                                              };
+                                              Get.toNamed(Routes.resultStats,
+                                                  parameters: data);
+                                            },
                                             style: OutlinedButton.styleFrom(
                                               side: const BorderSide(
                                                 color: Constants.basicColor,

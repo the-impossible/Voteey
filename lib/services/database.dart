@@ -12,6 +12,7 @@ import 'package:voteey/models/all_candidate_data.dart';
 import 'package:voteey/models/all_categories.dart';
 import 'package:voteey/models/candidate_details.dart';
 import 'package:voteey/models/position_data.dart';
+import 'package:voteey/models/result_stats.dart';
 import 'package:voteey/models/user_data.dart';
 import 'package:voteey/models/votingCategory.dart';
 
@@ -377,7 +378,7 @@ class DatabaseService extends GetxController {
             CandidateDetail detail = CandidateDetail(
               id: candidate.id,
               name: userSnapshot['name'],
-              regNo: userSnapshot['regNo'],
+              regNo: posSnapshot.id,
               image: 'no-image',
               position: posSnapshot['title'],
             );
@@ -387,7 +388,7 @@ class DatabaseService extends GetxController {
             CandidateDetail detail = CandidateDetail(
               id: candidate.id,
               name: 'TIE 🔀',
-              regNo: '',
+              regNo: posSnapshot.id,
               image: 'no-image',
               position: posSnapshot['title'],
             );
@@ -399,6 +400,31 @@ class DatabaseService extends GetxController {
       }
 
       return winningCandidates;
+    });
+  }
+
+  Stream<List<ResultDetails>> resultStatistics(String posID) {
+    return candidatesCollection
+        .where('pos_id', isEqualTo: positionCollection.doc(posID))
+        .orderBy('votes', descending: true)
+        .snapshots()
+        .asyncMap((snapshot) async {
+      final List<ResultDetails> resultDetails = [];
+
+      for (final doc in snapshot.docs) {
+        final data = doc.data();
+        final userSnapshot = await data['can_id'].get();
+        final imageSnapshot = await getImage(userSnapshot.id, 'Users');
+
+        resultDetails.add(ResultDetails(
+          id: doc.id,
+          name: userSnapshot['name'],
+          image: imageSnapshot!,
+          votes: data['votes'],
+        ));
+      }
+
+      return resultDetails;
     });
   }
 

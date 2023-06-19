@@ -423,10 +423,27 @@ class DatabaseService extends GetxController {
           votes: data['votes'],
         ));
       }
-
       return resultDetails;
     });
   }
 
+  Future<bool> deleteCandidate(String canID) async {
+    try {
+      final QuerySnapshot snapshot = await candidatesCollection
+          .where('can_id', isEqualTo: usersCollection.doc(canID))
+          .get();
+
+      final List<QueryDocumentSnapshot> documents = snapshot.docs;
+
+      if (documents.isNotEmpty) {
+        final DocumentReference documentRef = documents[0].reference;
+        await documentRef.delete();
+        return true;
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
+  }
   //
 }

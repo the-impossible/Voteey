@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:voteey/components/delegatedAppBar.dart';
 import 'package:voteey/components/delegatedText.dart';
+import 'package:voteey/controllers/deleteCandidateController.dart';
 import 'package:voteey/models/all_candidate_data.dart';
 import 'package:voteey/models/candidate_details.dart';
 import 'package:voteey/services/database.dart';
@@ -17,6 +18,8 @@ class AllCandidate extends StatefulWidget {
 
 class _AllCandidateState extends State<AllCandidate> {
   DatabaseService databaseService = Get.put(DatabaseService());
+  DeleteCandidateController deleteCandidateController =
+      Get.put(DeleteCandidateController());
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +89,42 @@ class _AllCandidateState extends State<AllCandidate> {
                                                 children: [
                                                   InkWell(
                                                     onTap: () {
-                                                      print("Delete something");
+                                                      showDialog(
+                                                          context: context,
+                                                          builder: (context) {
+                                                            return AlertDialog(
+                                                              title: const Text(
+                                                                  'Confirm Delete'),
+                                                              content: Text(
+                                                                  'Are you sure you want to delete for ${candidateData.name.titleCase()}? '),
+                                                              actions: [
+                                                                TextButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                  },
+                                                                  child: const Text(
+                                                                      'Cancel'),
+                                                                ),
+                                                                TextButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                    deleteCandidateController
+                                                                            .canID =
+                                                                        candidateData
+                                                                            .id;
+                                                                    deleteCandidateController
+                                                                        .deleteAccount();
+                                                                  },
+                                                                  child: const Text(
+                                                                      'Delete'),
+                                                                ),
+                                                              ],
+                                                            );
+                                                          });
                                                     },
                                                     child: const Icon(
                                                       Icons.delete_forever,

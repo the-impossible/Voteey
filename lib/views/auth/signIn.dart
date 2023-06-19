@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:voteey/components/delegatedForm.dart';
 import 'package:voteey/components/delegatedText.dart';
 import 'package:voteey/controllers/loginController.dart';
-import 'package:voteey/routes/routes.dart';
 import 'package:voteey/utils/constant.dart';
 
 class SignIn extends StatefulWidget {
@@ -52,35 +50,22 @@ class _SignInState extends State<SignIn> {
                     formController: loginController.passwordController,
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 18.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          onPressed: () {},
-                          child: DelegatedText(
-                            text: 'Forget password?',
-                            fontSize: 15,
-                            color: Constants.primaryColor,
-                          ),
+                    padding: const EdgeInsets.only(top: 30.0),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          loginController.signIn();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: Constants.primaryColor,
                         ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        loginController.signIn();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        primary: Constants.primaryColor,
-                      ),
-                      child: DelegatedText(
-                        fontSize: 15,
-                        text: 'Sign In',
-                        color: Constants.basicColor,
+                        child: DelegatedText(
+                          fontSize: 15,
+                          text: 'Sign In',
+                          color: Constants.basicColor,
+                        ),
                       ),
                     ),
                   ),

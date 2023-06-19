@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter_svg/svg.dart';
 import 'package:path/path.dart' as path;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:csv/csv.dart';
@@ -268,12 +269,22 @@ class _StudentListState extends State<StudentList> {
                                   );
                                 } else {
                                   return Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(top: 20.0),
-                                      child: DelegatedText(
-                                        text: "No Student Record",
-                                        fontSize: 20,
-                                      ),
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 50.0, bottom: 30),
+                                          child: SvgPicture.asset(
+                                            'assets/noFound.svg',
+                                            width: 50,
+                                            height: 200,
+                                          ),
+                                        ),
+                                        DelegatedText(
+                                          text: "No Student Record",
+                                          fontSize: 20,
+                                        ),
+                                      ],
                                     ),
                                   );
                                 }

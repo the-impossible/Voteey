@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:voteey/components/delegatedAppBar.dart';
 import 'package:voteey/components/delegatedText.dart';
@@ -88,10 +89,7 @@ class _ResultStatsState extends State<ResultStats> {
                           ),
                         );
                       } else {
-                        return const Padding(
-                          padding: EdgeInsets.all(10.0),
-                          child: Center(child: CircularProgressIndicator()),
-                        );
+                        return const Text("");
                       }
                     },
                   ),
@@ -224,10 +222,24 @@ class _ResultStatsState extends State<ResultStats> {
                                       );
                                     });
                               } else {
-                                return const Padding(
-                                  padding: EdgeInsets.all(10.0),
-                                  child: Center(
-                                      child: CircularProgressIndicator()),
+                                return Center(
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 50.0, bottom: 30),
+                                        child: SvgPicture.asset(
+                                          'assets/noStats.svg',
+                                          width: 50,
+                                          height: 200,
+                                        ),
+                                      ),
+                                      DelegatedText(
+                                        text: "Result Stats Disabled",
+                                        fontSize: 20,
+                                      ),
+                                    ],
+                                  ),
                                 );
                               }
                             },

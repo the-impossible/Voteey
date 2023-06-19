@@ -9,10 +9,9 @@ class Loading extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       backgroundColor: Colors.transparent,
-      // backgroundColor: Constants.primaryColor,
       body: Center(
         child: SpinKitFadingCircle(
-          color: Colors.white,
+          color: Constants.primaryColor,
           size: 50.0,
         ),
       ),

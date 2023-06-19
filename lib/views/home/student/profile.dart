@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:voteey/components/delegatedAppBar.dart';
 import 'package:voteey/components/delegatedSnackBar.dart';
 import 'package:voteey/components/delegatedText.dart';
+import 'package:voteey/controllers/logoutController.dart';
 import 'package:voteey/controllers/profileController.dart';
 import 'package:voteey/routes/routes.dart';
 import 'package:voteey/services/database.dart';
@@ -23,6 +24,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   ProfileController profileController = Get.put(ProfileController());
+  LogoutController logoutController = Get.put(LogoutController());
   DatabaseService databaseService = Get.put(DatabaseService());
   File? image;
 
@@ -236,7 +238,31 @@ class _ProfilePageState extends State<ProfilePage> {
                   const Spacer(),
                   TextButton(
                     onPressed: () {
-                      FirebaseAuth.instance.signOut();
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text('Confirm Logout'),
+                            content:
+                                const Text('Are you sure you want to logout? '),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  logoutController.signOut();
+                                },
+                                child: const Text('Log out'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
                     },
                     child: DelegatedText(
                       text: "Sign Out",
@@ -248,15 +274,19 @@ class _ProfilePageState extends State<ProfilePage> {
                 ],
               ),
             ),
-            Transform.scale(
-              scale: 1.5,
-              child: Switch(
-                value: isSwitched,
-                onChanged: toggleSwitch,
-                activeColor: Constants.primaryColor,
-              ),
-            ),
-            DelegatedText(text: textValue, fontSize: 20)
+            (databaseService.userData!.type == 'adm')
+                ? Transform.scale(
+                    scale: 1.5,
+                    child: Switch(
+                      value: isSwitched,
+                      onChanged: toggleSwitch,
+                      activeColor: Constants.primaryColor,
+                    ),
+                  )
+                : const Text(''),
+            (databaseService.userData!.type == 'adm')
+                ? DelegatedText(text: textValue, fontSize: 20)
+                : const Text(''),
           ],
         ),
       ),

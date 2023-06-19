@@ -8,6 +8,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter/services.dart';
+import 'package:voteey/components/delegatedSnackBar.dart';
 import 'package:voteey/models/all_candidate_data.dart';
 import 'package:voteey/models/all_categories.dart';
 import 'package:voteey/models/candidate_details.dart';
@@ -27,6 +28,7 @@ class DatabaseService extends GetxController {
   var positionCollection = FirebaseFirestore.instance.collection("Positions");
   var votesCollection = FirebaseFirestore.instance.collection("Votes");
   var statusCollection = FirebaseFirestore.instance.collection("Status");
+  var resultCollection = FirebaseFirestore.instance.collection("ShowResult");
   var candidatesCollection =
       FirebaseFirestore.instance.collection("Candidates");
   var filesCollection = FirebaseStorage.instance.ref();
@@ -312,34 +314,41 @@ class DatabaseService extends GetxController {
   }
 
   Future<bool> castVote(String uID, String posID, String canID) async {
-    //get voting collection equal to pos_id and user_id
-    final snapshot = await votesCollection
-        .where('pos_id', isEqualTo: positionCollection.doc(posID))
-        .where('user_id', isEqualTo: usersCollection.doc(uID))
-        .get();
+    // verify if voting session is live
+    bool status = await votingStatus().first;
 
-    // verify user has not voted for that position (snapshot)? hasVoted : vote
-    if (snapshot.docs.isEmpty) {
-      // cast user vote
-      votesCollection.doc().set({
-        'can_id': candidatesCollection.doc(canID),
-        'pos_id': positionCollection.doc(posID),
-        'user_id': usersCollection.doc(uID),
-      });
-
-      // update candidate vote
-      final candidateSnapshot = await candidatesCollection
-          .where('can_id', isEqualTo: usersCollection.doc(canID))
+    if (status) {
+      final snapshot = await votesCollection
+          .where('pos_id', isEqualTo: positionCollection.doc(posID))
+          .where('user_id', isEqualTo: usersCollection.doc(uID))
           .get();
 
-      if (candidateSnapshot.docs.isNotEmpty) {
-        final candidateDoc = candidateSnapshot.docs[0];
-        int currentVotes = candidateDoc['votes'] ?? 0;
-        await candidateDoc.reference.update({'votes': currentVotes + 1});
-        return true;
+      // verify user has not voted for that position (snapshot)? hasVoted : vote
+      if (snapshot.docs.isEmpty) {
+        // cast user vote
+        votesCollection.doc().set({
+          'can_id': candidatesCollection.doc(canID),
+          'pos_id': positionCollection.doc(posID),
+          'user_id': usersCollection.doc(uID),
+        });
+
+        // update candidate vote
+        final candidateSnapshot = await candidatesCollection
+            .where('can_id', isEqualTo: usersCollection.doc(canID))
+            .get();
+
+        if (candidateSnapshot.docs.isNotEmpty) {
+          final candidateDoc = candidateSnapshot.docs[0];
+          int currentVotes = candidateDoc['votes'] ?? 0;
+          await candidateDoc.reference.update({'votes': currentVotes + 1});
+          return true;
+        }
+        return false;
       }
       return false;
     }
+    ScaffoldMessenger.of(Get.context!)
+        .showSnackBar(delegatedSnackBar("Vote Session Stopped!", false));
     return false;
   }
 
@@ -463,5 +472,18 @@ class DatabaseService extends GetxController {
       return false;
     }
   }
-  //
+
+  //Check for the voting status
+  Stream<bool> votingStatus() {
+    final Stream<bool> stream = statusCollection.snapshots().map((snapshot) {
+      if (snapshot.docs.isNotEmpty) {
+        final bool status = snapshot.docs.first.data()['start_voting'] ?? false;
+        return status;
+      } else {
+        return false;
+      }
+    });
+    return stream;
+  }
+
 }

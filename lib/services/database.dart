@@ -26,6 +26,7 @@ class DatabaseService extends GetxController {
   var usersCollection = FirebaseFirestore.instance.collection("Users");
   var positionCollection = FirebaseFirestore.instance.collection("Positions");
   var votesCollection = FirebaseFirestore.instance.collection("Votes");
+  var statusCollection = FirebaseFirestore.instance.collection("Status");
   var candidatesCollection =
       FirebaseFirestore.instance.collection("Candidates");
   var filesCollection = FirebaseStorage.instance.ref();
@@ -438,6 +439,23 @@ class DatabaseService extends GetxController {
       if (documents.isNotEmpty) {
         final DocumentReference documentRef = documents[0].reference;
         await documentRef.delete();
+        return true;
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> beginOrEndVoting(bool status) async {
+    try {
+      final QuerySnapshot snapshot = await statusCollection.get();
+
+      final List<QueryDocumentSnapshot> documents = snapshot.docs;
+
+      if (documents.isNotEmpty) {
+        final DocumentReference documentRef = documents[0].reference;
+        await documentRef.update({'start_voting': status});
         return true;
       }
       return false;

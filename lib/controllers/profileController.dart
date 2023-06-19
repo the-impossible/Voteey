@@ -39,4 +39,29 @@ class ProfileController extends GetxController {
       navigator!.pop(Get.context!);
     }
   }
+
+  Future<void> toggleVoting(bool stats) async {
+    showDialog(
+      context: Get.context!,
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
+    try {
+
+        bool status = await databaseService.beginOrEndVoting(stats);
+
+        if (status) {
+               ScaffoldMessenger.of(Get.context!).showSnackBar(
+                delegatedSnackBar("Voting Status Updated", true));
+        } else {
+          ScaffoldMessenger.of(Get.context!)
+              .showSnackBar(delegatedSnackBar("Failed to update voting status", false));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(Get.context!)
+          .showSnackBar(delegatedSnackBar("FAILED: $e", false));
+    } finally {
+      navigator!.pop(Get.context!);
+    }
+  }
 }

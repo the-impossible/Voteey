@@ -43,12 +43,33 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  bool isSwitched = false;
+  var textValue = 'Start Voting';
+
+  void toggleSwitch(bool value) {
+    if (isSwitched == false) {
+      setState(() {
+        profileController.toggleVoting(value);
+        isSwitched = true;
+        textValue = 'End Voting';
+      });
+    } else {
+      setState(() {
+        profileController.toggleVoting(value);
+
+        isSwitched = false;
+        textValue = 'Start Voting';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
         body: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const DelegatedAppBar(),
             Padding(
@@ -227,32 +248,17 @@ class _ProfilePageState extends State<ProfilePage> {
                 ],
               ),
             ),
+            Transform.scale(
+              scale: 1.5,
+              child: Switch(
+                value: isSwitched,
+                onChanged: toggleSwitch,
+                activeColor: Constants.primaryColor,
+              ),
+            ),
+            DelegatedText(text: textValue, fontSize: 20)
           ],
         ),
-        // Padding(
-        //   padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-        //   child: Column(
-        //     mainAxisAlignment: MainAxisAlignment.start,
-        //     crossAxisAlignment: CrossAxisAlignment.start,
-        //     children: [
-
-        //       const SizedBox(height: 5),
-        //       const Divider(),
-
-        //       const Divider(),
-        //       const Spacer(),
-        //       ListTile(
-        //         leading: const Icon(Icons.logout),
-        //         title: DelegatedText(
-        //           text: "Sign Out",
-        //           fontSize: 16,
-        //           fontName: "InterBold",
-        //           color: Constants.primaryColor,
-        //         ),
-        //       ),
-        //     ],
-        //   ),
-        // ),
       ),
     );
   }

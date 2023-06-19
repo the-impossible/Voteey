@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:voteey/components/delegatedSnackBar.dart';
-import 'package:voteey/models/position_data.dart';
 import 'package:voteey/services/database.dart';
 
 class CastVoteController extends GetxController {
@@ -19,8 +18,6 @@ class CastVoteController extends GetxController {
       builder: (context) => const Center(child: CircularProgressIndicator()),
     );
     try {
-      print("can: $canID");
-      print("pos: $posID");
 
       bool status = await databaseService.castVote(
           FirebaseAuth.instance.currentUser!.uid, posID!, canID!);

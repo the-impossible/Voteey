@@ -3,10 +3,12 @@ import 'package:get/get.dart';
 import 'package:voteey/components/delegatedAppBar.dart';
 import 'package:voteey/components/delegatedText.dart';
 import 'package:voteey/models/all_categories.dart';
+import 'package:voteey/models/candidate_details.dart';
 import 'package:voteey/models/votingCategory.dart';
 import 'package:voteey/routes/routes.dart';
 import 'package:voteey/services/database.dart';
 import 'package:voteey/utils/constant.dart';
+import 'package:voteey/utils/title_case.dart';
 
 class ResultCategory extends StatefulWidget {
   const ResultCategory({super.key});
@@ -21,7 +23,6 @@ class _ResultCategoryState extends State<ResultCategory> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -35,9 +36,8 @@ class _ResultCategoryState extends State<ResultCategory> {
               ),
               child: Column(
                 children: [
-                  StreamBuilder<List<VotingCategory>>(
-                    // stream: databaseService.getVotingCategory(),
-                    stream: null,
+                  StreamBuilder<List<CandidateDetail>>(
+                    stream: databaseService.winningCategories(),
                     builder: (context, snapshot) {
                       if (snapshot.hasError) {
                         return Text("Something went wrong! ${snapshot.error}");
@@ -66,7 +66,7 @@ class _ResultCategoryState extends State<ResultCategory> {
                                       Row(
                                         children: [
                                           DelegatedText(
-                                            text: "President",
+                                            text: categoryData.position,
                                             fontSize: 20,
                                             fontName: "InterBold",
                                             color: Constants.basicColor,
@@ -84,9 +84,16 @@ class _ResultCategoryState extends State<ResultCategory> {
                                       Row(
                                         children: [
                                           DelegatedText(
-                                            text: "Winning : Richard Emmanuel",
+                                            text: "Winning : ",
                                             fontSize: 15,
                                             fontName: "InterBold",
+                                            color: Constants.basicColor,
+                                          ),
+                                          DelegatedText(
+                                            text: categoryData.name.titleCase(),
+                                            fontSize: 15,
+                                            fontName: "InterBold",
+                                            truncate: true,
                                             color: Constants.basicColor,
                                           ),
                                           const Spacer(),

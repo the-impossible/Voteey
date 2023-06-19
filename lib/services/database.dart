@@ -340,4 +340,67 @@ class DatabaseService extends GetxController {
     }
     return false;
   }
+
+  Stream<List<CandidateDetail>> winningCategories() {
+    // get all candidates
+    return candidatesCollection.snapshots().asyncMap((snapshot) async {
+      // assign the snapshot to a model for easy access
+      final List<AllCandidates> allCandidates =
+          snapshot.docs.map((doc) => AllCandidates.fromJson(doc)).toList();
+
+      // group candidate by their position
+      final Map<String, List<AllCandidates>> candidatesByPosition = {};
+
+      allCandidates.forEach((candidate) {
+        final String posID = candidate.posID.id;
+        if (candidatesByPosition.containsKey(posID)) {
+          candidatesByPosition[posID]!.add(candidate);
+        } else {
+          candidatesByPosition[posID] = [candidate];
+        }
+      });
+
+      // decide the winner
+      final List<CandidateDetail> winningCandidates = [];
+
+      for (final candidatesList in candidatesByPosition.values) {
+        int maxVotes = 0;
+
+        List<CandidateDetail> maxVoteCandidates = [];
+
+        for (final candidate in candidatesList) {
+          int votes = candidate.votes;
+          final userSnapshot = await candidate.canID.get();
+          final posSnapshot = await candidate.posID.get();
+
+          if (votes > maxVotes) {
+            CandidateDetail detail = CandidateDetail(
+              id: candidate.id,
+              name: userSnapshot['name'],
+              regNo: userSnapshot['regNo'],
+              image: 'no-image',
+              position: posSnapshot['title'],
+            );
+            maxVotes = votes;
+            maxVoteCandidates = [detail];
+          } else if (votes == maxVotes) {
+            CandidateDetail detail = CandidateDetail(
+              id: candidate.id,
+              name: 'TIE 🔀',
+              regNo: '',
+              image: 'no-image',
+              position: posSnapshot['title'],
+            );
+            maxVoteCandidates = [detail];
+          }
+        }
+
+        winningCandidates.addAll(maxVoteCandidates);
+      }
+
+      return winningCandidates;
+    });
+  }
+
+  //
 }

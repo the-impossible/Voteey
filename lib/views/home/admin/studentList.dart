@@ -1,10 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:path/path.dart' as path;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:voteey/components/delegatedAppBar.dart';
@@ -12,7 +11,6 @@ import 'package:voteey/components/delegatedSnackBar.dart';
 import 'package:voteey/components/delegatedText.dart';
 import 'package:voteey/controllers/createAccountController.dart';
 import 'package:voteey/models/user_data.dart';
-import 'package:voteey/routes/routes.dart';
 import 'package:voteey/services/database.dart';
 import 'package:voteey/utils/constant.dart';
 import 'package:voteey/utils/title_case.dart';
@@ -47,36 +45,43 @@ class _StudentListState extends State<StudentList> {
       barrierDismissible: false,
       builder: (context) => const Center(child: CircularProgressIndicator()),
     );
-
     filePath = result.files.first.path!;
 
-    final input = File(filePath!).openRead();
-    final fields = await input
-        .transform(utf8.decoder)
-        .transform(const CsvToListConverter())
-        .toList();
+    final String extension = path.extension(filePath!);
 
-    createAccountController.fields = fields;
+    if (extension.toLowerCase() == '.csv') {
+      final input = File(filePath!).openRead();
+      final fields = await input
+          .transform(utf8.decoder)
+          .transform(const CsvToListConverter())
+          .toList();
 
-    for (var element in fields) {
-      final regNo = element[0].toString().toLowerCase();
+      createAccountController.fields = fields;
 
-      QuerySnapshot snaps = await FirebaseFirestore.instance
-          .collection('Users')
-          .where("regNo", isEqualTo: regNo)
-          .get();
-      if (snaps.docs.length != 1) {
-        preSelected = "File Selected";
-      } else {
-        preSelected = "No selected file";
-        ScaffoldMessenger.of(Get.context!).showSnackBar(
-            delegatedSnackBar("Invalid CSV! contains existing account", false));
-        break;
+      for (var element in fields) {
+        final regNo = element[0].toString().toLowerCase();
+
+        QuerySnapshot snaps = await FirebaseFirestore.instance
+            .collection('Users')
+            .where("regNo", isEqualTo: regNo)
+            .get();
+        if (snaps.docs.length != 1) {
+          preSelected = "File Selected";
+        } else {
+          preSelected = "No selected file";
+          ScaffoldMessenger.of(Get.context!).showSnackBar(delegatedSnackBar(
+              "Invalid CSV! contains existing account", false));
+          break;
+        }
       }
+      setState(() {
+        selected = preSelected;
+      });
+    } else {
+      ScaffoldMessenger.of(Get.context!)
+          .showSnackBar(delegatedSnackBar("Invalid file!", false));
     }
-    setState(() {
-      selected = preSelected;
-    });
+
     navigator!.pop(Get.context!);
   }
 

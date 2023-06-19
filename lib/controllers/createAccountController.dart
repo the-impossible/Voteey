@@ -41,16 +41,18 @@ class CreateAccountController extends GetxController {
           // after creating the account, delete the secondary app
           await secondaryApp.delete();
         }
+        ScaffoldMessenger.of(Get.context!).showSnackBar(
+            delegatedSnackBar("Accounts created successfully!", true));
+      } else {
+        ScaffoldMessenger.of(Get.context!)
+            .showSnackBar(delegatedSnackBar("No file selected!", false));
       }
-
-      navigator!.pop(Get.context!);
-
-      ScaffoldMessenger.of(Get.context!).showSnackBar(
-          delegatedSnackBar("Accounts created successfully!", true));
     } on FirebaseAuthException catch (e) {
       navigator!.pop(Get.context!);
       ScaffoldMessenger.of(Get.context!)
           .showSnackBar(delegatedSnackBar(e.message.toString(), false));
+    } finally {
+      navigator!.pop(Get.context!);
     }
   }
 }

@@ -4,6 +4,7 @@ import 'package:voteey/components/delegatedAppBar.dart';
 import 'package:voteey/components/delegatedForm.dart';
 import 'package:voteey/components/delegatedText.dart';
 import 'package:voteey/controllers/positionController.dart';
+import 'package:voteey/controllers/votingStatusController.dart';
 import 'package:voteey/routes/routes.dart';
 import 'package:voteey/services/database.dart';
 import 'package:voteey/utils/constant.dart';
@@ -19,6 +20,8 @@ class CreateCandidate extends StatefulWidget {
 class _CreateCandidateState extends State<CreateCandidate> {
   DatabaseService databaseService = Get.put(DatabaseService());
   PositionController positionController = Get.put(PositionController());
+  VotingStatusController votingStatusController = Get.put(VotingStatusController());
+
 
   final _formKey = GlobalKey<FormState>();
 

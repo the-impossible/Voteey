@@ -10,6 +10,7 @@ import 'package:voteey/components/delegatedSnackBar.dart';
 import 'package:voteey/components/delegatedText.dart';
 import 'package:voteey/controllers/logoutController.dart';
 import 'package:voteey/controllers/profileController.dart';
+import 'package:voteey/controllers/votingStatusController.dart';
 import 'package:voteey/routes/routes.dart';
 import 'package:voteey/services/database.dart';
 import 'package:voteey/utils/constant.dart';
@@ -26,6 +27,9 @@ class _ProfilePageState extends State<ProfilePage> {
   ProfileController profileController = Get.put(ProfileController());
   LogoutController logoutController = Get.put(LogoutController());
   DatabaseService databaseService = Get.put(DatabaseService());
+  VotingStatusController votingStatusController =
+      Get.put(VotingStatusController());
+
   File? image;
 
   Future pickImage() async {
@@ -46,7 +50,20 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   bool isSwitched = false;
-  var textValue = 'Start Voting';
+  String textValue = 'End Voting';
+
+  Future<void> processStatus() async {
+    bool status = await votingStatusController.getStatus();
+    setState(() {
+      isSwitched = status;
+    });
+  }
+
+  @override
+  void initState() {
+    processStatus();
+    super.initState();
+  }
 
   void toggleSwitch(bool value) {
     if (isSwitched == false) {
@@ -67,6 +84,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    print("isSwitched $isSwitched");
+
     final size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(

@@ -15,14 +15,22 @@ class DeleteCandidateController extends GetxController {
       builder: (context) => const Center(child: CircularProgressIndicator()),
     );
     try {
-      bool status = await databaseService.deleteCandidate(canID!);
+      // get voting status
+      bool state = await databaseService.votingStatus().first;
 
-      if (status) {
-        ScaffoldMessenger.of(Get.context!).showSnackBar(
-            delegatedSnackBar("Candidate Deleted Successfully", true));
+      if (!state) {
+        bool status = await databaseService.deleteCandidate(canID!);
+
+        if (status) {
+          ScaffoldMessenger.of(Get.context!).showSnackBar(
+              delegatedSnackBar("Candidate Deleted Successfully", true));
+        } else {
+          ScaffoldMessenger.of(Get.context!).showSnackBar(
+              delegatedSnackBar("Failed to delete candidate!", false));
+        }
       } else {
-        ScaffoldMessenger.of(Get.context!).showSnackBar(
-            delegatedSnackBar("Failed to delete candidate!", false));
+        ScaffoldMessenger.of(Get.context!)
+            .showSnackBar(delegatedSnackBar("Voting is already live!", false));
       }
     } catch (e) {
       ScaffoldMessenger.of(Get.context!)

@@ -33,33 +33,41 @@ class PositionController extends GetxController {
       builder: (context) => const Center(child: CircularProgressIndicator()),
     );
     try {
-      String regNo = regNoController.text.toLowerCase();
-      // Verify user account exists
-      bool status = await databaseService.verifyStudent(regNo);
-      // Create position
-      if (status) {
-        // Verify if the the candidate has not been registered
-        bool hasApplied = await databaseService.hasApplied(regNo);
-        if (!hasApplied) {
-          bool isCandidate =
-              await databaseService.applyCandidate(regNo, selectedPosition!);
+      // get voting status
+      bool state = await databaseService.votingStatus().first;
 
-          if (isCandidate) {
-            ScaffoldMessenger.of(Get.context!).showSnackBar(
-                delegatedSnackBar("Application successful", true));
-            regNoController.clear();
-            selectedPosition = null;
+      if (!state) {
+        String regNo = regNoController.text.toLowerCase();
+        // Verify user account exists
+        bool status = await databaseService.verifyStudent(regNo);
+        // Create position
+        if (status) {
+          // Verify if the the candidate has not been registered
+          bool hasApplied = await databaseService.hasApplied(regNo);
+          if (!hasApplied) {
+            bool isCandidate =
+                await databaseService.applyCandidate(regNo, selectedPosition!);
+
+            if (isCandidate) {
+              ScaffoldMessenger.of(Get.context!).showSnackBar(
+                  delegatedSnackBar("Application successful", true));
+              regNoController.clear();
+              selectedPosition = null;
+            } else {
+              ScaffoldMessenger.of(Get.context!)
+                  .showSnackBar(delegatedSnackBar("Application failed", false));
+            }
           } else {
-            ScaffoldMessenger.of(Get.context!)
-                .showSnackBar(delegatedSnackBar("Application failed", false));
+            ScaffoldMessenger.of(Get.context!).showSnackBar(delegatedSnackBar(
+                "FAILED: Candidate has been registered!", false));
           }
         } else {
-          ScaffoldMessenger.of(Get.context!).showSnackBar(delegatedSnackBar(
-              "FAILED: Candidate has been registered!", false));
+          ScaffoldMessenger.of(Get.context!).showSnackBar(
+              delegatedSnackBar("FAILED: Regno don't exist!", false));
         }
       } else {
-        ScaffoldMessenger.of(Get.context!).showSnackBar(
-            delegatedSnackBar("FAILED: Regno don't exist!", false));
+        ScaffoldMessenger.of(Get.context!)
+            .showSnackBar(delegatedSnackBar("Voting is already live!", false));
       }
     } catch (e) {
       ScaffoldMessenger.of(Get.context!)

@@ -84,7 +84,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    print("isSwitched $isSwitched");
 
     final size = MediaQuery.of(context).size;
     return SafeArea(

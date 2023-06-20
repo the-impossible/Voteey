@@ -408,7 +408,6 @@ class DatabaseService extends GetxController {
 
         winningCandidates.addAll(maxVoteCandidates);
       }
-
       return winningCandidates;
     });
   }
@@ -485,5 +484,4 @@ class DatabaseService extends GetxController {
     });
     return stream;
   }
-
 }

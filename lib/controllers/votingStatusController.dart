@@ -10,7 +10,6 @@ class VotingStatusController extends GetxController {
 
   DatabaseService databaseService = Get.put(DatabaseService());
 
-  // bool isSwitched = false;
 
   Future<bool> getStatus() async {
     return await databaseService.votingStatus().first;

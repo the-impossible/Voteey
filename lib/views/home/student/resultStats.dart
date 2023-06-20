@@ -89,7 +89,7 @@ class _ResultStatsState extends State<ResultStats> {
                           ),
                         );
                       } else {
-                        return const Text("");
+                        return const Center(child: CircularProgressIndicator());
                       }
                     },
                   ),
@@ -107,140 +107,145 @@ class _ResultStatsState extends State<ResultStats> {
                                     "Something went wrong! ${snapshot.error}");
                               } else if (snapshot.hasData) {
                                 final resultData = snapshot.data!;
-
-                                return ListView.builder(
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemCount: resultData.length,
-                                    itemBuilder: (context, index) {
-                                      final resultDetails = resultData[index];
-                                      return Container(
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 10, vertical: 10),
-                                        height: size.height * .13,
-                                        decoration: BoxDecoration(
-                                          color: (index == 0)
-                                              ? Constants.secondaryColor
-                                              : Constants.basicColor,
-                                          boxShadow: const [
-                                            BoxShadow(
-                                              color: Color.fromARGB(
-                                                  221, 207, 203, 203),
-                                              blurRadius: 1,
-                                              offset: Offset(1, 3),
-                                            ),
-                                          ],
-                                          borderRadius:
-                                              BorderRadius.circular(15),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceAround,
-                                                children: [
-                                                  DelegatedText(
-                                                    text: resultDetails.name
-                                                        .titleCase(),
-                                                    truncate: true,
-                                                    fontSize: 18,
-                                                    fontName: "InterBold",
-                                                    color: (index == 0)
-                                                        ? Constants.basicColor
-                                                        : Constants
-                                                            .tertiaryColor,
-                                                  ),
-                                                  const Spacer(),
-                                                  GestureDetector(
-                                                    onTap: () => showDialog(
-                                                        context: context,
-                                                        builder: (context) {
-                                                          return AlertDialog(
-                                                            contentPadding:
-                                                                EdgeInsets.zero,
-                                                            content: SizedBox(
-                                                                height:
-                                                                    size.height *
-                                                                        .5,
-                                                                child: Image
-                                                                    .network(
-                                                                  resultDetails
-                                                                      .image,
-                                                                  width: 50,
-                                                                  height: 40,
-                                                                  fit: BoxFit
-                                                                      .contain,
-                                                                )),
-                                                          );
-                                                        }),
-                                                    child: CircleAvatar(
-                                                      backgroundColor:
-                                                          Color.fromARGB(255,
-                                                              228, 236, 230),
-                                                      minRadius: 25,
-                                                      maxRadius: 25,
-                                                      child: ClipOval(
-                                                        child: Image.network(
-                                                          resultDetails.image,
-                                                          height: 40,
-                                                          width: 40,
-                                                          fit: BoxFit.cover,
+                                if (resultData.isNotEmpty) {
+                                  return ListView.builder(
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemCount: resultData.length,
+                                      itemBuilder: (context, index) {
+                                        final resultDetails = resultData[index];
+                                        return Container(
+                                          margin: const EdgeInsets.symmetric(
+                                              horizontal: 10, vertical: 10),
+                                          height: size.height * .13,
+                                          decoration: BoxDecoration(
+                                            color: (index == 0)
+                                                ? Constants.secondaryColor
+                                                : Constants.basicColor,
+                                            boxShadow: const [
+                                              BoxShadow(
+                                                color: Color.fromARGB(
+                                                    221, 207, 203, 203),
+                                                blurRadius: 1,
+                                                offset: Offset(1, 3),
+                                              ),
+                                            ],
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceAround,
+                                                  children: [
+                                                    DelegatedText(
+                                                      text: resultDetails.name
+                                                          .titleCase(),
+                                                      truncate: true,
+                                                      fontSize: 18,
+                                                      fontName: "InterBold",
+                                                      color: (index == 0)
+                                                          ? Constants.basicColor
+                                                          : Constants
+                                                              .tertiaryColor,
+                                                    ),
+                                                    const Spacer(),
+                                                    GestureDetector(
+                                                      onTap: () => showDialog(
+                                                          context: context,
+                                                          builder: (context) {
+                                                            return AlertDialog(
+                                                              contentPadding:
+                                                                  EdgeInsets
+                                                                      .zero,
+                                                              content: SizedBox(
+                                                                  height:
+                                                                      size.height *
+                                                                          .5,
+                                                                  child: Image
+                                                                      .network(
+                                                                    resultDetails
+                                                                        .image,
+                                                                    width: 50,
+                                                                    height: 40,
+                                                                    fit: BoxFit
+                                                                        .contain,
+                                                                  )),
+                                                            );
+                                                          }),
+                                                      child: CircleAvatar(
+                                                        backgroundColor:
+                                                            Color.fromARGB(255,
+                                                                228, 236, 230),
+                                                        minRadius: 25,
+                                                        maxRadius: 25,
+                                                        child: ClipOval(
+                                                          child: Image.network(
+                                                            resultDetails.image,
+                                                            height: 40,
+                                                            width: 40,
+                                                            fit: BoxFit.cover,
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(height: 10),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceAround,
-                                                children: [
-                                                  DelegatedText(
-                                                    text:
-                                                        "${resultDetails.votes} Vote",
-                                                    fontSize: 13,
-                                                    fontName: "InterBold",
-                                                    color: (index == 0)
-                                                        ? Constants.basicColor
-                                                        : Constants
-                                                            .tertiaryColor,
-                                                  ),
-                                                  const Spacer()
-                                                ],
-                                              ),
-                                            ],
+                                                  ],
+                                                ),
+                                                const SizedBox(height: 10),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceAround,
+                                                  children: [
+                                                    DelegatedText(
+                                                      text:
+                                                          "${resultDetails.votes} Vote",
+                                                      fontSize: 13,
+                                                      fontName: "InterBold",
+                                                      color: (index == 0)
+                                                          ? Constants.basicColor
+                                                          : Constants
+                                                              .tertiaryColor,
+                                                    ),
+                                                    const Spacer()
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      });
+                                } else {
+                                  return Center(
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 50.0, bottom: 30),
+                                          child: SvgPicture.asset(
+                                            'assets/noStats.svg',
+                                            width: 50,
+                                            height: 200,
                                           ),
                                         ),
-                                      );
-                                    });
-                              } else {
-                                return Center(
-                                  child: Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 50.0, bottom: 30),
-                                        child: SvgPicture.asset(
-                                          'assets/noStats.svg',
-                                          width: 50,
-                                          height: 200,
+                                        DelegatedText(
+                                          text: "Result Stats Disabled",
+                                          fontSize: 20,
                                         ),
-                                      ),
-                                      DelegatedText(
-                                        text: "Result Stats Disabled",
-                                        fontSize: 20,
-                                      ),
-                                    ],
-                                  ),
-                                );
+                                      ],
+                                    ),
+                                  );
+                                }
+                              } else {
+                                return const Center(
+                                    child: CircularProgressIndicator());
                               }
                             },
                           ),

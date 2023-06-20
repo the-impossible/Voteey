@@ -50,12 +50,17 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   bool isSwitched = false;
-  String textValue = 'End Voting';
+  String textValue = '';
 
   Future<void> processStatus() async {
     bool status = await votingStatusController.getStatus();
     setState(() {
       isSwitched = status;
+      if (status) {
+        textValue = 'End Voting';
+      } else {
+        textValue = 'Start Voting';
+      }
     });
   }
 
@@ -75,7 +80,6 @@ class _ProfilePageState extends State<ProfilePage> {
     } else {
       setState(() {
         profileController.toggleVoting(value);
-
         isSwitched = false;
         textValue = 'Start Voting';
       });
@@ -84,7 +88,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-
     final size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(

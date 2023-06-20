@@ -20,8 +20,8 @@ class CreateCandidate extends StatefulWidget {
 class _CreateCandidateState extends State<CreateCandidate> {
   DatabaseService databaseService = Get.put(DatabaseService());
   PositionController positionController = Get.put(PositionController());
-  VotingStatusController votingStatusController = Get.put(VotingStatusController());
-
+  VotingStatusController votingStatusController =
+      Get.put(VotingStatusController());
 
   final _formKey = GlobalKey<FormState>();
 
@@ -52,20 +52,21 @@ class _CreateCandidateState extends State<CreateCandidate> {
                         key: _formKey,
                         child: Column(
                           children: [
-                            Container(
-                              height: size.height * 0.06,
-                              width: size.width,
-                              margin: const EdgeInsets.only(bottom: 15),
-                              decoration: BoxDecoration(
-                                color: Constants.secondaryColor,
-                                borderRadius: BorderRadius.circular(15),
-                              ),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 5.0),
                               child: Center(
                                 child: DelegatedText(
                                   text: 'Apply Candidate',
-                                  fontSize: 18,
-                                  color: Constants.basicColor,
+                                  fontSize: 20,
+                                  fontName: 'InterBold',
+                                  color: Constants.tertiaryColor,
                                 ),
+                              ),
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.only(bottom: 20),
+                              child: Divider(
+                                thickness: 2,
                               ),
                             ),
                             delegatedForm(

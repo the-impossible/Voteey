@@ -9,6 +9,8 @@ class ProfileController extends GetxController {
   DatabaseService databaseService = Get.put(DatabaseService());
   File? image;
 
+  var displayResult = false.obs;
+
   Future<void> updateAccount() async {
     showDialog(
       context: Get.context!,
@@ -47,15 +49,17 @@ class ProfileController extends GetxController {
       builder: (context) => const Center(child: CircularProgressIndicator()),
     );
     try {
+      bool status = await databaseService.beginOrEndVoting(stats);
+      if (!displayResult.value) {
+        displayResult(status);
+      }
 
-        bool status = await databaseService.beginOrEndVoting(stats);
-
-        if (status) {
-               ScaffoldMessenger.of(Get.context!).showSnackBar(
-                delegatedSnackBar("Voting Status Updated", true));
-        } else {
-          ScaffoldMessenger.of(Get.context!)
-              .showSnackBar(delegatedSnackBar("Failed to update voting status", false));
+      if (status) {
+        ScaffoldMessenger.of(Get.context!)
+            .showSnackBar(delegatedSnackBar("Voting Status Updated", true));
+      } else {
+        ScaffoldMessenger.of(Get.context!).showSnackBar(
+            delegatedSnackBar("Failed to update voting status", false));
       }
     } catch (e) {
       ScaffoldMessenger.of(Get.context!)

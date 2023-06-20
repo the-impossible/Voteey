@@ -34,6 +34,9 @@ class _StudentListState extends State<StudentList> {
   String preSelected = "";
 
   Future _pickCSV() async {
+    setState(() {
+      selected = "No selected file";
+    });
     final result = await FilePicker.platform.pickFiles(
       allowMultiple: false,
     );
@@ -67,7 +70,10 @@ class _StudentListState extends State<StudentList> {
             .where("regNo", isEqualTo: regNo)
             .get();
         if (snaps.docs.length != 1) {
-          preSelected = "File Selected";
+          preSelected = "File Selected!";
+          setState(() {
+            isDisabled = false;
+          });
         } else {
           preSelected = "No selected file";
           ScaffoldMessenger.of(Get.context!).showSnackBar(delegatedSnackBar(
@@ -86,6 +92,15 @@ class _StudentListState extends State<StudentList> {
     navigator!.pop(Get.context!);
   }
 
+  void uploadFile() {
+    createAccountController.createAccount();
+    setState(() {
+      isDisabled = true;
+      selected = "No selected file";
+    });
+  }
+
+  bool isDisabled = true;
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -149,7 +164,11 @@ class _StudentListState extends State<StudentList> {
                                 height: 50,
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    createAccountController.createAccount();
+                                    (isDisabled)
+                                        ? ScaffoldMessenger.of(Get.context!)
+                                            .showSnackBar(delegatedSnackBar(
+                                                "Error Uploading", false))
+                                        : uploadFile();
                                   },
                                   style: ElevatedButton.styleFrom(
                                     primary: Constants.basicColor,

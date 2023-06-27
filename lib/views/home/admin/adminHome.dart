@@ -40,7 +40,6 @@ class _AdminHomePageState extends State<AdminHomePage> {
             ProfilePage(),
           ],
         ),
-        drawer: const NavigationDrawer(),
         bottomNavigationBar: FancyBottomNavigation(
           circleColor: Constants.primaryColor,
           inactiveIconColor: Constants.primaryColor,

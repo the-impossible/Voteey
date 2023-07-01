@@ -1,6 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:voteey/components/delegatedText.dart';
 import 'package:voteey/utils/constant.dart';
 
@@ -28,7 +26,7 @@ Widget buildHeader(BuildContext context) {
   final size = MediaQuery.of(context).size;
   // DatabaseService databaseService = Get.put(DatabaseService());
   return Material(
-    color: Color.fromARGB(255, 245, 245, 245),
+    color: const Color.fromARGB(255, 245, 245, 245),
     child: InkWell(
       child: Container(
         padding: EdgeInsets.only(

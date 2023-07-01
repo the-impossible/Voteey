@@ -27,7 +27,7 @@ class delegatedForm extends StatefulWidget {
 class _delegatedFormState extends State<delegatedForm> {
   @override
   Widget build(BuildContext context) {
-    String? _errorText;
+    String? errorText;
     return Column(
       children: [
         Padding(
@@ -55,7 +55,7 @@ class _delegatedFormState extends State<delegatedForm> {
               fontSize: 15,
             ),
             decoration: InputDecoration(
-              errorText: _errorText,
+              errorText: errorText,
               filled: true,
               fillColor: Constants.basicColor,
               hintText: widget.hintText,

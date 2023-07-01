@@ -6,7 +6,6 @@ import 'package:voteey/components/delegatedText.dart';
 import 'package:voteey/controllers/castVoteController.dart';
 import 'package:voteey/models/candidate_details.dart';
 import 'package:voteey/models/votingCategory.dart';
-import 'package:voteey/routes/routes.dart';
 import 'package:voteey/services/database.dart';
 import 'package:voteey/utils/constant.dart';
 import 'package:voteey/utils/title_case.dart';
@@ -123,7 +122,7 @@ class _CastVoteState extends State<CastVote> {
                                     color: Constants.basicColor,
                                     borderRadius: BorderRadius.circular(15),
                                     border: Border.all(
-                                      color: Color.fromARGB(221, 207, 203, 203),
+                                      color: const Color.fromARGB(221, 207, 203, 203),
                                       width: 2.0,
                                     ),
                                   ),
@@ -213,7 +212,7 @@ class _CastVoteState extends State<CastVote> {
                                                               child:
                                                                   CircleAvatar(
                                                                 backgroundColor:
-                                                                    Color.fromARGB(
+                                                                    const Color.fromARGB(
                                                                         255,
                                                                         228,
                                                                         236,
@@ -288,7 +287,7 @@ class _CastVoteState extends State<CastVote> {
                                                               style:
                                                                   ElevatedButton
                                                                       .styleFrom(
-                                                                primary: Constants
+                                                                backgroundColor: Constants
                                                                     .primaryColor,
                                                                 shape:
                                                                     RoundedRectangleBorder(

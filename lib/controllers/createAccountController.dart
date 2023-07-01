@@ -18,29 +18,29 @@ class CreateAccountController extends GetxController {
     );
     try {
       if (fields.isNotEmpty) {
-        // for (var element in fields) {
-        //   final regNo = element[0].toString().toLowerCase().trim();
-        //   final name = element[1].toString().toLowerCase().trim();
+        for (var element in fields) {
+          final regNo = element[0].toString().toLowerCase().trim();
+          final name = element[1].toString().toLowerCase().trim();
 
-        //   FirebaseApp secondaryApp = await Firebase.initializeApp(
-        //     name: 'SecondaryApp',
-        //     options: Firebase.app().options,
-        //   );
+          FirebaseApp secondaryApp = await Firebase.initializeApp(
+            name: 'SecondaryApp',
+            options: Firebase.app().options,
+          );
 
-        //   FirebaseAuth createAuth = FirebaseAuth.instanceFor(app: secondaryApp);
+          FirebaseAuth createAuth = FirebaseAuth.instanceFor(app: secondaryApp);
 
-        //   var user = await createAuth.createUserWithEmailAndPassword(
-        //     email: "$regNo@gmail.com",
-        //     password: password,
-        //   );
+          var user = await createAuth.createUserWithEmailAndPassword(
+            email: "$regNo@gmail.com",
+            password: password,
+          );
 
-        //   // Create a new user
-        //   await DatabaseService(uid: user.user!.uid)
-        //       .createStudentData(name, regNo, 'std');
+          // Create a new user
+          await DatabaseService(uid: user.user!.uid)
+              .createStudentData(name, regNo, 'std');
 
-        //   // after creating the account, delete the secondary app
-        //   await secondaryApp.delete();
-        // }
+          // after creating the account, delete the secondary app
+          await secondaryApp.delete();
+        }
         ScaffoldMessenger.of(Get.context!).showSnackBar(
             delegatedSnackBar("Accounts created successfully!", true));
       } else {

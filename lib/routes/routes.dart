@@ -32,7 +32,7 @@ final getPages = [
   ),
   GetPage(
     name: Routes.studHome,
-    page: () => HomePage(),
+    page: () => const HomePage(),
   ),
   GetPage(
     name: Routes.castVote,
@@ -52,7 +52,7 @@ final getPages = [
   ),
   GetPage(
     name: Routes.adminHome,
-    page: () => AdminHomePage(),
+    page: () => const AdminHomePage(),
   ),
   GetPage(
     name: Routes.allCandidate,

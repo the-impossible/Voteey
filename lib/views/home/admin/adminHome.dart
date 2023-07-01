@@ -1,17 +1,13 @@
 import 'package:fancy_bottom_navigation_2/fancy_bottom_navigation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:voteey/components/navigationDrawer.dart';
 import 'package:voteey/utils/constant.dart';
 import 'package:voteey/views/home/admin/createCandidate.dart';
 import 'package:voteey/views/home/admin/studentList.dart';
 import 'package:voteey/views/home/student/profile.dart';
 import 'package:voteey/views/home/student/resultCategory.dart';
-import 'package:voteey/views/home/student/resultStats.dart';
-import 'package:voteey/views/home/student/voteCategory.dart';
 
 class AdminHomePage extends StatefulWidget {
-  AdminHomePage({super.key});
+  const AdminHomePage({super.key});
 
   @override
   State<AdminHomePage> createState() => _AdminHomePageState();

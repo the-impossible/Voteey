@@ -49,7 +49,7 @@ SnackBar delegatedSnackBar(String output, bool isSuccess) {
             height: 48,
             width: 40,
             color: isSuccess
-                ? Color.fromARGB(255, 9, 134, 61)
+                ? const Color.fromARGB(255, 9, 134, 61)
                 : const Color.fromARGB(255, 167, 26, 26),
           ),
         ),

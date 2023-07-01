@@ -124,7 +124,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                         }
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        primary: Constants.primaryColor,
+                                        backgroundColor: Constants.primaryColor,
                                       ),
                                       child: DelegatedText(
                                         fontSize: 15,

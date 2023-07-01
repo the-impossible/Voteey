@@ -182,7 +182,7 @@ class _ResultStatsState extends State<ResultStats> {
                                                           }),
                                                       child: CircleAvatar(
                                                         backgroundColor:
-                                                            Color.fromARGB(255,
+                                                            const Color.fromARGB(255,
                                                                 228, 236, 230),
                                                         minRadius: 25,
                                                         maxRadius: 25,

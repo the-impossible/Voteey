@@ -1,16 +1,11 @@
-import 'dart:ffi';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter/services.dart';
 import 'package:voteey/components/delegatedSnackBar.dart';
 import 'package:voteey/models/all_candidate_data.dart';
-import 'package:voteey/models/all_categories.dart';
 import 'package:voteey/models/candidate_details.dart';
 import 'package:voteey/models/position_data.dart';
 import 'package:voteey/models/result_stats.dart';
@@ -362,14 +357,14 @@ class DatabaseService extends GetxController {
       // group candidate by their position
       final Map<String, List<AllCandidates>> candidatesByPosition = {};
 
-      allCandidates.forEach((candidate) {
+      for (var candidate in allCandidates) {
         final String posID = candidate.posID.id;
         if (candidatesByPosition.containsKey(posID)) {
           candidatesByPosition[posID]!.add(candidate);
         } else {
           candidatesByPosition[posID] = [candidate];
         }
-      });
+      }
 
       // decide the winner
       final List<CandidateDetail> winningCandidates = [];

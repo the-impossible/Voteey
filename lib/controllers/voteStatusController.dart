@@ -4,7 +4,7 @@ import 'package:voteey/services/database.dart';
 class VoteStatusController extends GetxController {
   DatabaseService databaseService = Get.put(DatabaseService());
 
-  RxBool _isLive = false.obs;
+  final RxBool _isLive = false.obs;
   bool _isListening = false;
 
   RxBool get isLive => _isLive;

@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:voteey/components/delegatedSnackBar.dart';
 import 'package:voteey/services/database.dart';
-import 'package:voteey/utils/loading.dart';
 
 class LoginController extends GetxController {
   TextEditingController regNoController = TextEditingController();
@@ -35,7 +34,7 @@ class LoginController extends GetxController {
 
       ScaffoldMessenger.of(Get.context!)
           .showSnackBar(delegatedSnackBar("Sign in successful", true));
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException {
       navigator!.pop(Get.context!);
       ScaffoldMessenger.of(Get.context!)
           .showSnackBar(delegatedSnackBar("Invalid login credentials", false));

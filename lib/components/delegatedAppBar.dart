@@ -47,7 +47,7 @@ class DelegatedAppBar extends StatelessWidget {
                     );
                   } else if (snapshot.hasData) {
                     return CircleAvatar(
-                      backgroundColor: Color.fromARGB(255, 228, 236, 230),
+                      backgroundColor: const Color.fromARGB(255, 228, 236, 230),
                       minRadius: 25,
                       maxRadius: 25,
                       child: ClipOval(

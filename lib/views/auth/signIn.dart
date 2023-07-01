@@ -6,6 +6,8 @@ import 'package:voteey/controllers/loginController.dart';
 import 'package:voteey/utils/constant.dart';
 
 class SignIn extends StatefulWidget {
+  const SignIn({super.key});
+
   @override
   State<SignIn> createState() => _SignInState();
 }
@@ -59,7 +61,7 @@ class _SignInState extends State<SignIn> {
                           loginController.signIn();
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: Constants.primaryColor,
+                          backgroundColor: Constants.primaryColor,
                         ),
                         child: DelegatedText(
                           fontSize: 15,

@@ -122,7 +122,7 @@ class _CreateCandidateState extends State<CreateCandidate> {
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  primary: Constants.primaryColor,
+                                  backgroundColor: Constants.primaryColor,
                                 ),
                                 child: DelegatedText(
                                   fontSize: 15,

@@ -1,14 +1,12 @@
 import 'package:fancy_bottom_navigation_2/fancy_bottom_navigation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:voteey/utils/constant.dart';
-import 'package:voteey/views/auth/signIn.dart';
 import 'package:voteey/views/home/student/profile.dart';
 import 'package:voteey/views/home/student/resultCategory.dart';
 import 'package:voteey/views/home/student/voteCategory.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({super.key});
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();

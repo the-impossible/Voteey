@@ -22,7 +22,7 @@ class DelegatedText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      (truncate == true)? truncateString(text, 16):text,
+      (truncate == true) ? truncateString(text, 13) : text,
       softWrap: true,
       style: TextStyle(
         color: color,
@@ -36,11 +36,10 @@ class DelegatedText extends StatelessWidget {
   }
 
   String truncateString(String input, int maxLength) {
-  if (input.length <= maxLength) {
-    return input;
-  } else {
-    return input.substring(0, maxLength) + "...";
+    if (input.length <= maxLength) {
+      return input;
+    } else {
+      return "${input.substring(0, maxLength)}...";
+    }
   }
-}
-
 }

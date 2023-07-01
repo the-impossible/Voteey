@@ -133,7 +133,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 return Center(
                                   child: CircleAvatar(
                                     backgroundColor:
-                                        Color.fromARGB(255, 228, 236, 230),
+                                        const Color.fromARGB(255, 228, 236, 230),
                                     maxRadius: 50,
                                     minRadius: 50,
                                     child: ClipOval(

@@ -149,7 +149,7 @@ class _StudentListState extends State<StudentList> {
                                     _pickCSV();
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    primary: Constants.basicColor,
+                                    backgroundColor: Constants.basicColor,
                                   ),
                                   child: DelegatedText(
                                     fontSize: 15,
@@ -171,7 +171,7 @@ class _StudentListState extends State<StudentList> {
                                         : uploadFile();
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    primary: Constants.basicColor,
+                                    backgroundColor: Constants.basicColor,
                                   ),
                                   child: DelegatedText(
                                     fontSize: 15,

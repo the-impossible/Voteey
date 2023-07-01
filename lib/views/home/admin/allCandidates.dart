@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:voteey/components/delegatedAppBar.dart';
 import 'package:voteey/components/delegatedText.dart';
 import 'package:voteey/controllers/deleteCandidateController.dart';
-import 'package:voteey/models/all_candidate_data.dart';
 import 'package:voteey/models/candidate_details.dart';
 import 'package:voteey/services/database.dart';
 import 'package:voteey/utils/constant.dart';
@@ -182,7 +181,7 @@ class _AllCandidateState extends State<AllCandidate> {
                                                         }),
                                                     child: CircleAvatar(
                                                       backgroundColor:
-                                                          Color.fromARGB(255,
+                                                          const Color.fromARGB(255,
                                                               228, 236, 230),
                                                       minRadius: 25,
                                                       maxRadius: 25,
